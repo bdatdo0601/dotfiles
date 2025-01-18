@@ -63,6 +63,8 @@ cask 'microsoft-teams'
 cask 'nikitabobko/tap/aerospace'
 cask 'iterm2'
 cask 'notion'
+cask 'notion-calendar'
+cask 'claude'
 
 # Quicklook
 cask 'qlmarkdown'
