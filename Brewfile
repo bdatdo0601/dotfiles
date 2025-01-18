@@ -62,6 +62,7 @@ cask 'homerow'
 cask 'microsoft-teams'
 cask 'nikitabobko/tap/aerospace'
 cask 'iterm2'
+cask 'notion'
 
 # Quicklook
 cask 'qlmarkdown'
