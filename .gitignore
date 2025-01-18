@@ -170,4 +170,4 @@ etc/clusto*.conf
 !path.zsh
 !ssh.sh
 !.customscripts
-!dotfilesapps/
+!vscodeext.txt
