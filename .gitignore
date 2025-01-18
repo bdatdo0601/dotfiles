@@ -160,3 +160,13 @@ etc/clusto*.conf
 # Lazygit
 !.config/lazygit/
 !.config/lazygit/config.yml
+
+# vscode
+!.vscode/
+
+# dotfiles
+!fresh.sh
+!clone.sh
+!Brewfile
+!path.zsh
+!ssh.sh
