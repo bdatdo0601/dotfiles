@@ -1,6 +1,5 @@
 1yib.rust-bundle
 alefragnani.project-manager
-amazonwebservices.amazon-q-vscode
 amazonwebservices.aws-toolkit-vscode
 bierner.emojisense
 bierner.markdown-emoji
