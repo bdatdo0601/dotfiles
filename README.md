@@ -23,5 +23,4 @@ git pull origin main
 ```
 
 5. Start `Herd.app` and run its install process
-6. After mackup is synced with your cloud storage, restore preferences by running `mackup restore`
-7. Restart your computer to finalize the process
+6. Restart your computer to finalize the process
