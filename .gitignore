@@ -171,3 +171,8 @@ etc/clusto*.conf
 !ssh.sh
 !.customscripts
 !vscodeext.txt
+!README.md
+!Library/Application\ Support/Code/User/keybindings.json
+!Library/Application\ Support/Code/User/settings.json
+!Library/Application\ Support/Code/User/snippets/*.json
+!vscodeextbackup.sh

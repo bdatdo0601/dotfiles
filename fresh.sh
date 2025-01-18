@@ -2,6 +2,11 @@
 
 echo "Setting up your Mac..."
 
+# Install Rust 
+if test ! $(which rustup); then
+  /bin/sh -c "$(curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs)"
+fi
+
 # Check for Oh My Zsh and install if we don't have it
 if test ! $(which omz); then
   /bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/HEAD/tools/install.sh)"
@@ -15,9 +20,10 @@ if test ! $(which brew); then
   eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
-# Removes .zshrc from $HOME (if it exists) and symlinks the .zshrc file from the .dotfiles
-rm -rf $HOME/.zshrc
-ln -sw $HOME/.dotfiles/.zshrc $HOME/.zshrc
+# Install nvm (node)
+if test ! $(which nvm); then
+  /bin/bash -c "$(curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh)"
+fi
 
 # Update Homebrew recipes
 brew update
@@ -30,18 +36,13 @@ brew bundle --file ./Brewfile
 mysql -u root -e "ALTER USER root@localhost IDENTIFIED WITH mysql_native_password BY 'password'; FLUSH PRIVILEGES;"
 
 # Create a projects directories
-mkdir $HOME/Code
-mkdir $HOME/Herd
-
-# Create Code subdirectories
-mkdir $HOME/Code/blade-ui-kit
-mkdir $HOME/Code/laravel
+mkdir $HOME/workspace
 
 # Clone Github repositories
 ./clone.sh
 
-# Symlink the Mackup config file to the home directory
-ln -s ./.mackup.cfg $HOME/.mackup.cfg
+# Install VSCode Extension
+./install_vscode_ext.sh
 
 # Set macOS preferences - we will run this last because this will reload the shell
 source ./.macos

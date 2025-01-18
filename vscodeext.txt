@@ -13,7 +13,6 @@ continue.continue
 davidanson.vscode-markdownlint
 disneystreaming.smithy
 donjayamanne.githistory
-donjayamanne.javadebugger
 dustypomerleau.rust-syntax
 dvirtz.parquet-viewer
 eamodio.gitlens
@@ -34,10 +33,8 @@ gruntfuggly.todo-tree
 hediet.vscode-drawio
 inferrinizzard.prettier-sql-vscode
 jebbs.markdown-extended
-joaompinto.vscode-graphviz
 kddejong.vscode-cfn-lint
 luqimin.velocity
-marklel.vscode-brazil
 mathiasfrohlich.kotlin
 mbehr1.vsc-lfs
 mechatroner.rainbow-csv
@@ -59,7 +56,6 @@ ms-vscode-remote.remote-ssh-edit
 ms-vscode.remote-explorer
 ms-vscode.vscode-typescript-next
 mushan.vscode-paste-image
-mwpb.java-prettier-formatter
 naco-siren.gradle-language
 netcorext.uuid-generator
 pkief.material-icon-theme
@@ -85,7 +81,6 @@ vscjava.vscode-java-dependency
 vscjava.vscode-java-pack
 vscjava.vscode-java-test
 vscjava.vscode-lombok
-vscodevim.vim
+vscjava.vscode-maven
 vsls-contrib.gitdoc
-xyc.vscode-mdx-preview
 yzhang.markdown-all-in-one
