@@ -169,6 +169,7 @@ etc/clusto*.conf
 !Brewfile
 !path.zsh
 !ssh.sh
+!aliases.zsh
 !.customscripts
 !vscodeext.txt
 !README.md

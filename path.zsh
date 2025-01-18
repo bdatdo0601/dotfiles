@@ -17,3 +17,6 @@ add_to_path "$HOME/.node/bin"
 # Use project specific binaries before global ones
 add_to_path "vendor/bin"
 add_to_path "node_modules/.bin"
+
+# Load custom scripts
+add_to_path "$HOME/.customscripts"
