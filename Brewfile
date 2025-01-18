@@ -65,6 +65,7 @@ cask 'iterm2'
 cask 'notion'
 cask 'notion-calendar'
 cask 'claude'
+cask 'warp'
 
 # Quicklook
 cask 'qlmarkdown'
