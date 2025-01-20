@@ -32,17 +32,13 @@ brew update
 brew tap homebrew/bundle
 brew bundle --file ./Brewfile
 
-# Set default MySQL root password and auth type
-mysql -u root -e "ALTER USER root@localhost IDENTIFIED WITH mysql_native_password BY 'password'; FLUSH PRIVILEGES;"
-
-# Create a projects directories
-mkdir $HOME/workspace
-
-# Clone Github repositories
-./clone.sh
+# Create a projects directory if it doesn't exist
+if [ ! -d "$HOME/workspace" ]; then
+ mkdir $HOME/workspace
+fi
 
 # Install VSCode Extension
-./install_vscode_ext.sh
+$HOME/.customscripts/install_vscode_ext.sh
 
 # Set macOS preferences - we will run this last because this will reload the shell
-source ./.macos
+source $HOME/.macos

@@ -1,0 +1,5 @@
+[".oh-my-zsh/custom/themes/minimal"]
+    type = "archive"
+    url = "https://github.com/subnixr/minimal/archive/tags/1.0.1.tar.gz"
+    exact = true
+    stripComponents = 1
