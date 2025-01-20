@@ -1,1 +1,1 @@
-code --list-extensions > $HOME/vscodeext.txt
+code --list-extensions > ../vscodeext.txt
