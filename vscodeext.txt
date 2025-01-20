@@ -7,10 +7,10 @@ bierner.markdown-footnotes
 bierner.markdown-mermaid
 biomejs.biome
 bpruitt-goddard.mermaid-markdown-syntax-highlighting
+bradlc.vscode-tailwindcss
 christian-kohler.npm-intellisense
 continue.continue
 davidanson.vscode-markdownlint
-disneystreaming.smithy
 donjayamanne.githistory
 dustypomerleau.rust-syntax
 dvirtz.parquet-viewer
@@ -25,6 +25,8 @@ foam.foam-vscode
 fwcd.kotlin
 github.copilot
 github.copilot-chat
+github.github-vscode-theme
+github.vscode-pull-request-github
 graphql.vscode-graphql
 graphql.vscode-graphql-execution
 graphql.vscode-graphql-syntax
@@ -32,6 +34,7 @@ gruntfuggly.todo-tree
 hediet.vscode-drawio
 inferrinizzard.prettier-sql-vscode
 jebbs.markdown-extended
+joshua-fontany.tw5-syntax
 kddejong.vscode-cfn-lint
 luqimin.velocity
 mathiasfrohlich.kotlin
@@ -65,8 +68,10 @@ redhat.vscode-xml
 redhat.vscode-yaml
 rianadon.vscode-java-checkstyle
 rust-lang.rust-analyzer
+sine.tiddlywiki5
 tomoki1207.pdf
 tomoyukim.vscode-mermaid-editor
 unifiedjs.vscode-mdx
 vsls-contrib.gitdoc
+xyc.vscode-mdx-preview
 yzhang.markdown-all-in-one
