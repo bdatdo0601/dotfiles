@@ -1,0 +1,9 @@
+{{- $alias := promptString "alias" "bdatdo0601" -}}
+{{- $email := promptString "email" "dat.b.do@gmail.com" -}}
+
+[data]
+    email = {{ $email | quote }}
+    alias = {{ $alias | quote }}
+[git]
+    autoCommit = true
+    autoPush = true
