@@ -1,0 +1,10 @@
+helpers/
+helpers/**
+
+{{- if ne .email "dtdo@amazon.com" }}
+# Ignore .company-directory unless configured with a company email
+{{- end }}
+
+{{- if ne .email "dat.b.do@gmail.com" }}
+.personal-file
+{{- end }}

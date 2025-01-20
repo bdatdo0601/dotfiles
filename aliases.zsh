@@ -42,7 +42,6 @@ alias resolve="git add . && git commit --no-edit"
 alias stash="git stash -u"
 alias unstage="git restore --staged ."
 alias wip="commit wip"
-alias GITHUB_USERNAME='bdatdo0601'
 
 # Chezmoi
 alias cmedit="chezmoi edit --apply"
