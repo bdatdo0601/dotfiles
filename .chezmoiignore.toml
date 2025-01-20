@@ -1,6 +1,8 @@
 helpers/
 helpers/**
 
+README.md
+
 {{- if ne .email "dtdo@amazon.com" }}
 # Ignore .company-directory unless configured with a company email
 {{- end }}
