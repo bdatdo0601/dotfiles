@@ -1,5 +1,5 @@
+{{- if eq .chezmoi.os "darwin" -}}
 #!/bin/sh
-
 echo "Setting up your Mac..."
 
 # Install Rust 
@@ -13,6 +13,7 @@ if test ! $(which omz); then
 fi
 
 # Check for Homebrew and install if we don't have it
+# Hash to watch brewfile content {{ include "Brewfile" | sha256sum }}
 if test ! $(which brew); then
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
@@ -42,3 +43,4 @@ $HOME/.customscripts/install_vscode_ext.sh
 
 # Set macOS preferences - we will run this last because this will reload the shell
 source $HOME/.macos
+{{ end -}}
