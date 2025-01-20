@@ -33,6 +33,7 @@ brew 'gifsicle'
 # Development
 brew 'imagemagick'
 brew 'yarn'
+brew 'chezmoi'
 
 # Apps
 # cask '1password'
