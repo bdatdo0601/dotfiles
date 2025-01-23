@@ -15,7 +15,7 @@ curl https://raw.githubusercontent.com/driesvints/dotfiles/HEAD/ssh.sh | sh -s "
 sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply git@github.com:bdatdo0601/dotfiles.git
 ```
 
-4. install this workflow https://alfred.app/workflows/alfredapp/backup-preferences/ set sync folder to `$HOME/alfred_pref`
+4. install this workflow https://alfred.app/workflows/alfredapp/backup-preferences/ set sync folder to `$HOME/.local/share/chezmoi/alfred_pref` --> choose restore backup to the latest 
 
 5. Restart your computer to finalize the process
 
