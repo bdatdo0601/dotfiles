@@ -15,4 +15,18 @@ curl https://raw.githubusercontent.com/driesvints/dotfiles/HEAD/ssh.sh | sh -s "
 sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply git@github.com:bdatdo0601/dotfiles.git
 ```
 
-4. Restart your computer to finalize the process
+4. install this workflow https://alfred.app/workflows/alfredapp/backup-preferences/ set sync folder to `$HOME/alfred_pref`
+
+5. Restart your computer to finalize the process
+
+
+## Hot Keys mapping 
+
+Alfred --> Cmd + Ctrl + Space
+Alfred File Search --> Option + Cmd + /
+Alfred Universal Action --> Cmd + Ctrl + \
+Alfred Clipboard --> Option + Cmd + C
+Alfred Snippet --> Ctrl + Cmd + Shift + S
+Homerow Click --> Cmd + Shift + Option + F
+Homerow Scrolling --> Cmd + Shift + Option + J
+Homerow Search --> Cmd + Shift + Option + Space

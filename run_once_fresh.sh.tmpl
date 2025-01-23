@@ -2,6 +2,9 @@
 #!/bin/sh
 echo "Setting up your Mac..."
 
+echo "Enable File Vault"
+sudo fdesetup enable || true
+
 # Install Rust 
 if test ! $(which rustup); then
   /bin/sh -c "$(curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs)"
