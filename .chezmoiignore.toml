@@ -10,3 +10,5 @@ README.md
 {{- if ne .email "dat.b.do@gmail.com" }}
 .personal-file
 {{- end }}
+
+.gitignore
