@@ -11,12 +11,19 @@ Forked from https://github.com/driesvints/dotfiles
 ## Hot Keys mapping
 
 Alfred --> Cmd + Ctrl + Space
+
 Alfred File Search --> Option + Cmd + /
+
 Alfred Universal Action --> Cmd + Ctrl + \
+
 Alfred Clipboard --> Option + Cmd + C
+
 Alfred Snippet --> Ctrl + Cmd + Shift + S
+
 Homerow Click --> Cmd + Shift + Option + F
+
 Homerow Scrolling --> Cmd + Shift + Option + J
+
 Homerow Search --> Cmd + Shift + Option + Space
 
 ## Backups Encrypted Files
