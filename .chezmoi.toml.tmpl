@@ -1,6 +1,9 @@
 {{- $alias := promptString "alias" "bdatdo0601" -}}
 {{- $email := promptString "email" "dat.b.do@gmail.com" -}}
 
+encryption = "age"
+[age]
+    passphrase = true
 [data]
     email = {{ $email | quote }}
     alias = {{ $alias | quote }}
@@ -11,6 +14,8 @@
     autoPush = true
 [diff]
     exclude = ["scripts"]
+    command = "code"
+    args = ["--wait", "--diff"]
 [edit]
     command = "code"
     args = ["--wait"]

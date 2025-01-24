@@ -32,6 +32,7 @@ brew 'gifsicle'
 brew 'imagemagick'
 brew 'yarn'
 brew 'chezmoi'
+brew 'age'
 
 # Apps
 # cask '1password'

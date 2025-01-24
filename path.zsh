@@ -23,3 +23,5 @@ add_to_path "$HOME/.customscripts"
 
 # Load VS Code
 add_to_path "/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+
+add_to_path "$HOME/.local/share/chezmoi/helpers"

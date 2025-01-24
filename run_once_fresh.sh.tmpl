@@ -44,6 +44,17 @@ fi
 # Install VSCode Extension
 $HOME/.customscripts/install_vscode_ext.sh
 
+# decrypt alfred preferences
+mkdir -p $HOME/.local/share/chezmoi/alfred_pref/
+for file in encrypted_alfred/*; do
+    if [ -f "$file" ]; then
+        filename=$(basename "$file")
+        echo "decrypt $filename"
+        chezmoi decrypt "$file" --output "$HOME/.local/share/chezmoi/alfred_pref/$filename"
+    fi
+done
+
+
 # Set macOS preferences - we will run this last because this will reload the shell
 source $HOME/.macos
 {{ end -}}
