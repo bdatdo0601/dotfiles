@@ -41,6 +41,9 @@ if [ ! -d "$HOME/workspace" ]; then
  mkdir $HOME/workspace
 fi
 
+# Install TPM
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+
 # Install VSCode Extension
 $HOME/.customscripts/install_vscode_ext.sh
 
