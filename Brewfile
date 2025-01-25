@@ -22,6 +22,7 @@ brew 'svn' # Needed to install fonts
 brew 'aichat'
 brew 'nvim'
 brew 'tmux'
+brew 'python'
 
 # Spatie Medialibrary
 brew 'jpegoptim'

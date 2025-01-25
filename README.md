@@ -8,6 +8,12 @@ Forked from https://github.com/driesvints/dotfiles
 4. install this workflow https://alfred.app/workflows/alfredapp/backup-preferences/ set sync folder to `$HOME/.local/share/chezmoi/alfred_pref` --> choose restore backup to the latest 
 5. Restart your computer to finalize the process
 
+## Sync VS-Code
+
+Login to github via vs-code to sync setting and others
+
+Turn Sync on
+
 ## Hot Keys mapping
 
 Alfred --> Cmd + Ctrl + Space
