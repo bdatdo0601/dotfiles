@@ -14,3 +14,5 @@ README.md
 .gitignore
 alfred_pref/
 alfred_pref/**
+dygma_config/
+dygma_config/**
