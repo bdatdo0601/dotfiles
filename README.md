@@ -44,6 +44,26 @@ Ctrl + n --> File Tree
 <leader> + <leader> --> Shortcut
 ```
 
+## TMUX Useful command
+
+```
+<leader> by default is ctrl+b
+
+<leader> + x --> terminate
+
+<leader> + % --> open a new pane horizontally
+
+<leader> + " --> open a new pane vertically
+
+<leader> + c --> new window
+
+<leader> + d --> detach session
+
+<leader> + s --> switch session
+
+<leader> + hjkl --> move focus
+```
+
 ## Backups Encrypted Files
 
 run `cmencryptbackup.sh` (located in helpers)
