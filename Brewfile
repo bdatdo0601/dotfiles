@@ -80,4 +80,4 @@ cask 'font-source-code-pro'
 # Mac App Store
 mas 'noteshub-notes-kanban-boards', id: 1621210753
 mas 'Giphy Capture', id: 668208984
-mas 'Magnet', id: 441258766
+# mas 'Magnet', id: 441258766
