@@ -36,6 +36,7 @@ brew 'imagemagick'
 brew 'yarn'
 brew 'chezmoi'
 brew 'age'
+brew 'ripgrep'
 
 # Apps
 # cask '1password'
@@ -80,6 +81,7 @@ cask 'font-open-sans'
 cask 'font-roboto'
 cask 'font-source-code-pro-for-powerline'
 cask 'font-source-code-pro'
+cask 'font-jetbrains-mono-nerd-font'
 
 # Mac App Store
 mas 'noteshub-notes-kanban-boards', id: 1621210753
