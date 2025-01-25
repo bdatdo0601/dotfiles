@@ -32,6 +32,18 @@ Homerow Scrolling --> Cmd + Shift + Option + J
 
 Homerow Search --> Cmd + Shift + Option + Space
 
+## NVIM Useful command
+
+```
+<leader> by default is space
+
+Ctrl + n --> File Tree
+
+<leader> + f f --> File Search
+
+<leader> + <leader> --> Shortcut
+```
+
 ## Backups Encrypted Files
 
 run `cmencryptbackup.sh` (located in helpers)

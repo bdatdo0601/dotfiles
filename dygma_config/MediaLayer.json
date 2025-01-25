@@ -196,10 +196,9 @@
       "verbose": "Transparent"
     },
     {
-      "keyCode": 0,
-      "label": "KEY",
-      "extraLabel": "NO",
-      "verbose": "Disabled"
+      "keyCode": 4372,
+      "label": "Q",
+      "extraLabel": ""
     },
     {
       "keyCode": 0,
@@ -562,7 +561,7 @@
     14,
     14,
     1,
-    14,
+    11,
     14,
     14,
     14,
