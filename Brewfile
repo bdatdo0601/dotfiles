@@ -65,6 +65,7 @@ cask 'notion'
 cask 'notion-calendar'
 cask 'claude'
 cask 'warp'
+cask 'yt-music'
 
 # Quicklook
 cask 'qlmarkdown'
