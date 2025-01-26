@@ -37,6 +37,7 @@ brew 'yarn'
 brew 'chezmoi'
 brew 'age'
 brew 'ripgrep'
+brew 'pnpm'
 
 # Apps
 # cask '1password'
