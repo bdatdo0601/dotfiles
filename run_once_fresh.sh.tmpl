@@ -54,8 +54,6 @@ for file in encrypted_alfred/*; do
     fi
 done
 
-cp -r $HOME/.local/share/chezmoi/fonts/JetbrainsMono/* $HOME/Library/Fonts
-
 # Set macOS preferences - we will run this last because this will reload the shell
 source $HOME/.macos
 {{ end -}}
