@@ -12,7 +12,8 @@ alias vim='nvim'
 # Directories
 alias dotfiles="cd $DOTFILES"
 alias library="cd $HOME/Library"
-alias projects="cd $HOME/Code"
+alias projects="cd $HOME/workspace"
+alias workspace="cd $HOME/workspace"
 alias sites="cd $HOME/Herd"
 
 # JS

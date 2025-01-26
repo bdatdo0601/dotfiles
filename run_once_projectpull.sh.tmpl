@@ -1,0 +1,11 @@
+#!/bin/sh
+
+WORKSPACE=$HOME/workspace
+
+echo "Cloning repositories..."
+
+{{- if eq .email "dat.b.do@gmail.com" }}
+git clone git@github.com:bdatdo0601/big-boi.git $WORKSPACE/big-boi
+{{- end }}
+
+echo "Done cloning"
