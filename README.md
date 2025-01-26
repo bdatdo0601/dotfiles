@@ -32,6 +32,63 @@ Homerow Scrolling --> Cmd + Shift + Option + J
 Homerow Search --> Cmd + Shift + Option + Space
 ```
 
+## Aerospace command
+
+```markdown
+
+<leader> is alt keys
+
+can also be controlled by Tilling Layer via Dygma Config
+
+configurable via dot_aerospace.toml
+
+<leader> 0 --> 9 generic workspace
+
+<leader> T terminal workspace
+
+<leader> B browser workspace
+
+<leader> N notes workspace
+
+<leader> M meetings workspace
+
+<leader> P players (music) workspace
+
+<leader> C code workspace
+
+<leader> tab switch monitor focus
+
+<leader> shift tab --> move current workspace to next monitor
+
+<leader> comma --> accordion view
+
+<leader> slash --> tiles view
+
+<leader> enter --> fullscreen current window
+
+<leader> hjkl --> move focus between window in workspace
+
+<leader> shift hjkl --> move window 
+
+<leader> shift minus --> decrease window size
+
+<leader> shift plus --> increase window size
+
+<leader> semi-colon --> enter service mode
+----
+[Service Mode]
+
+<leader> esc --> reload config (post config modification)
+
+<leader> r --> reset window in workspace
+
+<leader> f --> toggle workspace setup between floating and Tilling
+
+<leader> backspace --> close non-focus window
+
+<leader> shift hjkl --> join current window with direction
+```
+
 ## NVIM Useful command
 
 ```markdown
