@@ -1,0 +1,6 @@
+{{- if eq .chezmoi.os "darwin" -}}
+#!/bin/sh
+echo "Resetting Mac Configuration"
+# Set macOS preferences - we will run this last because this will reload the shell
+source $HOME/.macos
+{{ end -}}

@@ -26,7 +26,7 @@ fi
 
 # Install nvm (node)
 if test ! $(which nvm); then
-  /bin/bash -c "$(curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh)"
+  /bin/sh -c "$(curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh)"
 fi
 
 # Update Homebrew recipes
@@ -53,7 +53,4 @@ for file in encrypted_alfred/*; do
         chezmoi decrypt "$file" --output "$HOME/.local/share/chezmoi/alfred_pref/$filename"
     fi
 done
-
-# Set macOS preferences - we will run this last because this will reload the shell
-source $HOME/.macos
 {{ end -}}
