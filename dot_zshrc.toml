@@ -129,9 +129,7 @@ compctl -K    _pyenv pyenv
 source $(chezmoi source-path)/path.zsh
 source $(chezmoi source-path)/aliases.zsh
 source $(chezmoi source-path)/envvars.zsh
-if which rbenv > /dev/null; then
-    eval "$(rbenv init -)"
-fi
+
 export JAVA_TOOLS_OPTIONS="-Dlog4j2.formatMsgNoLookups=true"
 
 printf '\eP$f{"hook": "SourcedRcFileForWarp", "value": { "shell": "zsh" }}\x9c'
