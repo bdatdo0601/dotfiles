@@ -30,6 +30,8 @@ brew 'optipng'
 brew 'pngquant'
 brew 'svgo'
 brew 'gifsicle'
+brew 'gcc'
+brew 'vips'
 
 # Development
 brew 'imagemagick'
