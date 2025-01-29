@@ -42,15 +42,17 @@ if [ ! -d "$HOME/workspace" ]; then
 fi
 
 # Install TPM
-git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+if [ ! "$(ls -A ~/.tmux/plugins/tpm 2>/dev/null)" ]; then
+  git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+fi
 
 # decrypt alfred preferences
-mkdir -p $HOME/.local/share/chezmoi/alfred_pref/
+mkdir -p $HOME/alfred_pref/
 for file in encrypted_alfred/*; do
     if [ -f "$file" ]; then
         filename=$(basename "$file")
         echo "decrypt $filename"
-        chezmoi decrypt "$file" --output "$HOME/.local/share/chezmoi/alfred_pref/$filename"
+        chezmoi decrypt "$file" --output "$HOME/alfred_pref/$filename"
     fi
 done
 {{ end -}}

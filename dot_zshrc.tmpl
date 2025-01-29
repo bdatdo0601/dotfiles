@@ -146,6 +146,13 @@ case ":$PATH:" in
 esac
 # pnpm end
 
+if type brew &>/dev/null; then
+  FPATH=$(brew --prefix)/share/zsh-completions:$FPATH
+
+  autoload -Uz compinit
+  compinit
+fi
+
 {{- if eq .email "dtdo@amazon.com" }}
 export PATH=$HOME/.toolbox/bin:$PATH
 export PATH=$HOME/.dtdo:$PATH
