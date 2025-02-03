@@ -42,8 +42,8 @@ brew 'ripgrep'
 brew 'pnpm'
 
 # Apps
-# cask '1password'
-# brew '1password-cli'
+cask '1password'
+brew '1password-cli'
 cask 'alfred'
 cask 'caffeine'
 cask 'discord'

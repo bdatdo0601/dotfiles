@@ -252,3 +252,7 @@ run = "move-node-to-workspace M"
 [[on-window-detected]]
 if.app-id = 'uk.co.wearecocoon.YT-Music'
 run = "move-node-to-workspace P"
+
+[[on-window-detected]]
+if.app-id = 'com.microsoft.Outlook'
+run = "move-node-to-workspace M"
