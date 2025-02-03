@@ -8,4 +8,8 @@ echo "Cloning repositories..."
 git clone git@github.com:bdatdo0601/big-boi.git $WORKSPACE/big-boi
 {{- end }}
 
+{{- if eq .email "dat.do@robinai.com" }}
+git clone git@github.com:ai-robin/dat.do.notes.git $WORKSPACE/notes
+{{- end }}
+
 echo "Done cloning"
