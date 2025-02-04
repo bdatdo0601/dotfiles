@@ -41,6 +41,8 @@ brew 'age'
 brew 'ripgrep'
 brew 'pnpm'
 brea 'pipx'
+brew 'libpq'
+brew 'postgresql'
 
 # Apps
 cask '1password'
