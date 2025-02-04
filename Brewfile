@@ -40,6 +40,7 @@ brew 'chezmoi'
 brew 'age'
 brew 'ripgrep'
 brew 'pnpm'
+brea 'pipx'
 
 # Apps
 cask '1password'

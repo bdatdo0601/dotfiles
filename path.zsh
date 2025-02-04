@@ -25,3 +25,6 @@ add_to_path "$HOME/.customscripts"
 add_to_path "/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
 
 add_to_path "$HOME/.local/share/chezmoi/helpers"
+
+# Python
+add_to_path "$HOME/.local/bin"
