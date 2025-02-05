@@ -40,7 +40,7 @@ brew 'chezmoi'
 brew 'age'
 brew 'ripgrep'
 brew 'pnpm'
-brea 'pipx'
+brew 'pipx'
 brew 'libpq'
 brew 'postgresql'
 

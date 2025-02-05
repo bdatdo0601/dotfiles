@@ -10,10 +10,12 @@ if test ! $(which rustup); then
   /bin/sh -c "$(curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs)"
 fi
 
-# Check for Oh My Zsh and install if we don't have it
-if test ! $(which omz); then
-  /bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/HEAD/tools/install.sh)"
-fi
+# Re-install oh-my-zsh
+rm -rf $HOME/.oh-my-zsh
+CHSH=no /bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/HEAD/tools/install.sh) --unattended"
+cp -r $HOME/.oh-my-zsh/ $(chezmoi source-path)/oh-my-zsh
+mv -f $HOME/.zshrc.pre-oh-my-zsh $HOME/.zshrc
+
 
 # Check for Homebrew and install if we don't have it
 # Hash to watch brewfile content {{ include "Brewfile" | sha256sum }}
