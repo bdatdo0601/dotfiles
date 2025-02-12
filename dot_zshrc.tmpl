@@ -154,6 +154,8 @@ case ":$PATH:" in
 esac
 # pnpm end
 
+echo "ssh-add --apple-use-keychain" >> ~/.zshrc
+
 {{- if eq .email "dtdo@amazon.com" }}
 export PATH=$HOME/.toolbox/bin:$PATH
 export PATH=$HOME/.dtdo:$PATH
