@@ -8,7 +8,7 @@ export ZSH="$HOME/.oh-my-zsh"
 export MNML_INSERT_CHAR="$"
 export MNML_PROMPT=(mnml_git mnml_keymap)
 export MNML_RPROMPT=('mnml_cwd 20')
-
+source $ZSH/oh-my-zsh.sh
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
@@ -76,8 +76,6 @@ ZSH_CUSTOM="$ZSH/custom"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(git macos poetry)
-
-source $ZSH/oh-my-zsh.sh
 
 if type brew &>/dev/null; then
   FPATH=$(brew --prefix)/share/zsh-completions:$FPATH
