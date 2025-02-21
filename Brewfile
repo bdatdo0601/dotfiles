@@ -73,6 +73,7 @@ cask 'notion-calendar'
 cask 'claude'
 cask 'warp'
 cask 'yt-music'
+cask 'obsidian'
 
 # Quicklook
 cask 'qlmarkdown'
