@@ -43,6 +43,7 @@ brew 'pnpm'
 brew 'pipx'
 brew 'libpq'
 brew 'postgresql'
+brew 'localstack/tap/localstack-cli'
 
 # Apps
 cask '1password'
