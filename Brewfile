@@ -75,6 +75,7 @@ cask 'claude'
 cask 'warp'
 cask 'yt-music'
 cask 'obsidian'
+cask 'zed'
 
 # Quicklook
 cask 'qlmarkdown'
