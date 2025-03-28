@@ -258,6 +258,6 @@ if.app-id = 'com.microsoft.Outlook'
 run = "move-node-to-workspace M"
 
 [[on-window-detected]]
-if.app-id = 'cdev.zed.Zed'
+if.app-id = 'dev.zed.Zed'
 run = "move-node-to-workspace C"
 
