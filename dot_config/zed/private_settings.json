@@ -16,7 +16,7 @@
   },
   "base_keymap": "VSCode",
   "buffer_font_family": "JetBrainsMono Nerd Font Mono",
-  "ui_font_size": 12,
+  "ui_font_size": 14,
   "buffer_font_size": 12,
   "theme": {
     "mode": "system",
