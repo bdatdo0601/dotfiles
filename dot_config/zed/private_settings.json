@@ -7,6 +7,9 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "features": {
+    "edit_prediction_provider": "zed"
+  },
   "assistant": {
     "default_model": {
       "provider": "anthropic",
@@ -27,8 +30,31 @@
     "dark": "Github Dark"
   },
   "file_types": {
-    "Dockerfile": ["Dockerfile", "Dockerfile.*"],
-    "JSON": ["json", "jsonc", "*.code-snippets"]
+    "Dockerfile": [
+      "Dockerfile",
+      "Dockerfile.*"
+    ],
+    "JSON": [
+      "json",
+      "jsonc",
+      "*.code-snippets"
+    ]
+  },
+  "lsp": {
+    "biome": {
+      "settings": {
+        "require_config_file": true
+      }
+    }
+  },
+  "formatter": {
+    "language_server": {
+      "name": "biome"
+    }
+  },
+  "code_actions_on_format": {
+    "source.fixAll.biome": true,
+    "source.organizeImports.biome": true
   },
   "language_overrides": {
     "Markdown": {
@@ -50,8 +76,17 @@
       }
     },
     "Python": {
-      "language_servers": ["pyright", "ruff"],
-      "formatter": { "external": { "command": "black", "arguments": ["-"] } }
+      "language_servers": [
+        "ruff"
+      ],
+      "formatter": {
+        "external": {
+          "command": "black",
+          "arguments": [
+            "-"
+          ]
+        }
+      }
     }
   }
 }
