@@ -13,7 +13,7 @@
   "assistant": {
     "default_model": {
       "provider": "anthropic",
-      "model": "claude-3-7-sonnet-latest"
+      "model": "claude-3-5-haiku-latest"
     },
     "version": "2"
   },
@@ -30,33 +30,40 @@
     "dark": "Github Dark"
   },
   "file_types": {
-    "Dockerfile": [
-      "Dockerfile",
-      "Dockerfile.*"
-    ],
-    "JSON": [
-      "json",
-      "jsonc",
-      "*.code-snippets"
-    ]
+    "Dockerfile": ["Dockerfile", "Dockerfile.*"],
+    "JSON": ["json", "jsonc", "*.code-snippets"]
   },
   "lsp": {
     "biome": {
       "settings": {
         "require_config_file": true
       }
-    }
-  },
-  "formatter": {
-    "language_server": {
-      "name": "biome"
+    },
+    "pyright": {
+      "settings": {
+        "python.analysis": {
+          "diagnosticMode": "workspace",
+          "typeCheckingMode": "off"
+        }
+      }
+    },
+    "ruff": {
+      "initialization_options": {
+        "settings": {
+          // Ruff server settings goes here
+          "lineLength": 120,
+          "lint": {
+            "extendSelect": ["I"]
+          }
+        }
+      }
     }
   },
   "code_actions_on_format": {
     "source.fixAll.biome": true,
     "source.organizeImports.biome": true
   },
-  "language_overrides": {
+  "languages": {
     "Markdown": {
       "soft_wrap": "editor_width"
     },
@@ -73,20 +80,31 @@
       "line_height": "standard",
       "env": {
         "EDITOR": "zed --wait"
+      },
+      "formatter": {
+        "language_server": {
+          "name": "biome"
+        }
       }
     },
     "Python": {
-      "language_servers": [
-        "ruff"
-      ],
-      "formatter": {
-        "external": {
-          "command": "black",
-          "arguments": [
-            "-"
-          ]
+      "language_servers": ["ruff"],
+      "format_on_save": "on",
+      "formatter": [
+        {
+          "language_server": {
+            "name": "ruff"
+          }
+        },
+        {
+          "code_actions": {
+            // Fix all auto-fixable lint violations
+            "source.fixAll.ruff": true,
+            // Organize imports
+            "source.organizeImports.ruff": true
+          }
         }
-      }
+      ]
     }
   }
 }
