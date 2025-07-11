@@ -1,2 +1,0 @@
-git+https://github.com/NorthIsUp/alfred-workflow-py3.git
-boto3
