@@ -20,6 +20,7 @@ export MNML_RPROMPT=('mnml_cwd 20')
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 ZSH_THEME="powerlevel10k/powerlevel10k"
+source $ZSH/oh-my-zsh.sh
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -135,9 +136,9 @@ znap eval iterm2 'curl -fsSL https://iterm2.com/shell_integration/zsh'
 # `znap function` lets you lazy-load features you don't always need.
 znap function _pyenv pyenvn 'eval "$( pyenv init - --no-rehash )"'
 compctl -K    _pyenv pyenv
-source $(chezmoi source-path)/path.zsh
-source $(chezmoi source-path)/aliases.zsh
-source $(chezmoi source-path)/envvars.zsh
+source $HOME/path.zsh
+source $HOME/aliases.zsh
+source $HOME/envvars.zsh
 
 export JAVA_TOOLS_OPTIONS="-Dlog4j2.formatMsgNoLookups=true"
 
@@ -154,7 +155,6 @@ case ":$PATH:" in
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 # pnpm end
-source $ZSH/oh-my-zsh.sh
 ssh-add --apple-use-keychain
 
 {{- if eq .email "dtdo@amazon.com" }}

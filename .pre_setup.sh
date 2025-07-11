@@ -33,3 +33,6 @@ brew bundle --file ./Brewfile
 if [ ! "$(ls -A ~/.tmux/plugins/tpm 2>/dev/null)" ]; then
   git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 fi
+
+# Install Python uv
+curl -LsSf https://astral.sh/uv/install.sh | sh
