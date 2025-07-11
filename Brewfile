@@ -1,5 +1,4 @@
 # Taps
-tap 'homebrew/bundle'
 # tap 'stripe/stripe-cli'
 
 # Binaries
@@ -47,7 +46,7 @@ brew 'localstack/tap/localstack-cli'
 
 # Apps
 cask '1password'
-brew '1password-cli'
+cask '1password-cli'
 cask 'alfred'
 cask 'caffeine'
 cask 'discord'

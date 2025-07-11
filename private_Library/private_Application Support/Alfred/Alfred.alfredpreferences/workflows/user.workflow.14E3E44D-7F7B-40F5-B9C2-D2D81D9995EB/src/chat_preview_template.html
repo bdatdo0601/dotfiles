@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>GPT Nexus - Conversation</title>
+
+        <!-- Base styling -->
+        <style>
+            html {
+                color: #333;
+                background-color: rgb(244, 244, 244, 0.9);
+            }
+
+            body {
+                font-family: -apple-system, "SF Pro", "Helvetica Neue",
+                    Oxygen-Sans, sans-serif;
+                line-height: 150%;
+                font-size: 85%;
+                margin: 0 auto;
+                max-width: 38em;
+                padding: 20px;
+            }
+
+            ol {
+                padding-left: 20px;
+            }
+
+            ul {
+                padding-left: 20px;
+            }
+
+            div.bot {
+                position: relative;
+                padding-left: 50px;
+                margin: 25px -5px;
+                margin-right: 40px;
+                display: block;
+                overflow: hidden;
+                width: 85%;
+            }
+
+            div.bot blockquote {
+                margin: 25px 0px 0px;
+                border-left: 3px solid #bbbbbb;
+                padding-left: 1em;
+                color: rgba(51, 51, 51, 0.75);
+            }
+
+            img.bot {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 30px;
+                height: auto;
+                margin-left: 10px;
+                transform: translateY(130%);
+            }
+
+            div.user {
+                background-color: #e7e7e6;
+                border-radius: 15px;
+                padding: 0px 15px 0px 15px;
+                max-width: 80%;
+                align-self: right;
+                text-align: left;
+                position: relative;
+                display: inline-block;
+                float: right;
+                clear: both;
+            }
+
+            div.user blockquote {
+                border-left: 3px solid #bbbbbb;
+                margin: 1em 0 1em 0.1em;
+                padding-left: 1em;
+                color: rgba(51, 51, 51, 0.75);
+            }
+
+            /* Code block styling */
+            pre {
+                background-color: #292c33 !important;
+                border-radius: 6px !important;
+                padding: 1em !important;
+                margin: 1em 0 !important;
+                overflow-x: auto !important;
+            }
+
+            code {
+                background-color: #292c33 !important;
+                font-family: Menlo, Monaco, Consolas, "Lucida Console",
+                    monospace !important;
+                font-size: 0.9em !important;
+                color: #f8f8f2 !important;
+            }
+
+            pre.sourceCode,
+            code.sourceCode {
+                background-color: #292c33 !important;
+            }
+
+            /* Inline code */
+            :not(pre) > code {
+                background-color: #dddddd !important;
+                padding: 0.2em 0.4em !important;
+                border-radius: 3px !important;
+                color: #333 !important;
+            }
+
+            /* Headers */
+            h1,
+            h2,
+            h3,
+            h4,
+            h5,
+            h6 {
+                line-height: 130%;
+            }
+
+            /* Prism.js specific overrides */
+            code[class*="language-"],
+            pre[class*="language-"] {
+                background: #292c33 !important;
+                text-shadow: none !important;
+            }
+
+            .token.comment {
+                color: #6a9955 !important;
+            }
+            .token.string {
+                color: #ce9178 !important;
+            }
+            .token.number {
+                color: #b5cea8 !important;
+            }
+            .token.keyword {
+                color: #569cd6 !important;
+            }
+            .token.function {
+                color: #dcdcaa !important;
+            }
+            .token.class-name {
+                color: #4ec9b0 !important;
+            }
+            .token.operator {
+                color: #d4d4d4 !important;
+            }
+        </style>
+
+        <!-- Prism.js Core and Theme -->
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"
+        />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+
+        <!-- Language support -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-swift.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-rust.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-clike.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+
+        <!-- Prism.js Core and Theme -->
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"
+        />
+        <!-- href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaida.min.css" -->
+
+        <script>
+            document.addEventListener("DOMContentLoaded", (event) => {
+                // Force Prism to highlight pre/code blocks
+                document.querySelectorAll("pre code").forEach((block) => {
+                    // Ensure the language class is set
+                    if (!block.className.includes("language-")) {
+                        let lang =
+                            block.parentElement.className.match(
+                                /sourceCode\s+(\w+)/,
+                            );
+                        if (lang) {
+                            console.log("Detected language:", lang[1]);
+                            block.className = "language-" + lang[1];
+                        } else {
+                            block.className = "language-none";
+                        }
+                    }
+                    Prism.highlightElement(block);
+                });
+            });
+        </script>
+    </head>
+    <body>
+        $body$
+    </body>
+</html>
