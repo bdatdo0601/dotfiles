@@ -1,0 +1,117 @@
+__start Healthcare SA Team - Daily Scrum (Calendar)
+    location: https://chime.aws/4741422010
+    notes: Extending to Oct 2nd.
+    attendees: Johnston, Steven, pin+4741422010@chime.aws, Russell, Simon, McAllister, Angus, Dickens, Nick, Seward, James, meet@chime.aws, Motoi, Corina, Miller, Michael, Warburton, Craig
+    09:30 - 09:50
+__start EMEA Public Sector Control Tower - Interim Solution Office hours.  (Calendar)
+    notes: Office Hours for SA’s working with customers to implement interim Solution for Control Tower.
+           
+           
+           You have been invited to an online meeting, powered by Amazon Chime.
+           
+           
+           Download Amazon Chime at https://aws.amazon.com/chime/download
+           For information about creating an Amazon Chime account, see https://aws.amazon.com/chime/getting-started
+           
+           
+           Click to join the meeting: https://chime.aws/9548801342
+           Meeting ID: 9548 80 1342
+           A headset is recommended or you may use your computer’s microphone and speakers.
+           
+           
+           Call in using your phone:
+           United States Toll-Free (1): +1 855-552-4463
+           Meeting ID: 9548 80 1342
+           One-click Mobile Dial-in (United States (1)): +1 206-462-5569,,,9548801342#
+           United States (1): +1 206-462-5569
+           International: https://chime.aws/dialinnumbers/
+           Dial-in attendees must enter *7 to mute or unmute themselves.
+           
+           
+           To connect from an in-room video system, use one of the following Amazon Chime bridges:
+           SIP video system: 9548801342@meet.chime.in or meet.chime.in
+           H.323 system: 13.248.147.139 or 76.223.18.152
+           If prompted enter the Meeting PIN: 9548801342#Control
+    attendees: Rebello, Anil, Joris, Geroen, Miller, Michael, aws-wwps-emea-sa, Benfattoum, Ali, Ellis, Holly, Davis, Pete, meet@chime.aws, Sack, Raphael, Egeler, Alex, pin+9548801342@chime.aws, Seward, James, Warnett, Lou
+    10:00 - 11:00
+__start EMEA Real Talk – Policy Context of COVID-19: How AWS Responded  (Calendar)
+    location: https://chime.aws/6047322462  / Meeting ID: 6047 32 2462
+    notes: Dear all, please join us on 01 July for our EMEA Real Talk – Policy Context of COVID-19: How AWS Responded
+           
+           Chime details: Click to join the meeting https://chime.aws/6047322462  / Meeting ID: 6047 32 2462
+           
+           Session Overview: During this session, we will provide policy context for COVID-19 across EMEA, we will look in more detail at statistics on how the virus spread, provide information on the stimulus packages announced to date in EMEA and how these differ to the US stimulus package, how AWS responded, key learnings and post-pandemic policy priorities. We will look at two specific case studies: Italy, as the first country to be severely affected by COVID-19 in EMEA, and specific policy priorities for Healthcare.
+           
+           Target Audience: This session is primarily aimed at EMEA Sellers but EMEA Tech Teams are also welcome to join.
+           
+           Presenters: Your presenters will be Nicky Murphy and Franco Spicciariello, from our EMEA Public Policy team, and Kathryn Mihalich, from our AMER Capture team.
+           
+           EMEA Real Talk: EMEA Real Talk is a virtual training series that forms part of the EMEA WWPS everboarding program. It is aimed at tenured EMEA WWPS Sellers, Sales Support, or Technical staff. These 30 to 60 mins long enablement sessions are targeted, timely lessons that build business value. Each session is designed to elevate the success you have with your customers and prospects. All sessions are recorded and posted on the EMEA Real Talk Broadcast Channel<https://broadcast.amazon.com/channels/12656>.
+           
+           Conny
+           
+           [cid:image001.png@01D64661.18994C00]
+           
+           Conny Lutz | AWS World Wide Public Sector - Enablement EMEA
+           Email: conlutz@amazon.co.uk<mailto:conlutz@amazon.co.uk>
+           EMEA WWPS Enablement Wiki<https://w.amazon.com/bin/view/AWS/Teams/WWPS/SE/EMEA/>
+           Global WWPS Enablement Wiki<https://w.amazon.com/index.php/AWS/Teams/WWPS/SE>
+           
+           
+           [cid:image002.jpg@01D64661.18994C00]
+           [cid:image003.jpg@01D64661.18994C00]
+    attendees: Vinai, Elisa, aws-emea-wwps-sa, Youssef, Lamiese, Mihalich, Kathryn, Spicciariello, Franco, aws-emea-wwps-pdm, Lutz, Conny, Malandris, Vicky, Rainert, Jay, Zaremba, Malwina, Seward, James, aws-emea-wwps-gld, aws-emea-wwps-proserve, aws-emea-wwps-sales, Murphy, Nicky, wwps-training
+    13:30 - 14:15
+__start Intersystems/AWS Ireland Trakcare Proposal Discussion (Calendar)
+    location: CHIME - Details Below 
+    notes: Discussion points:
+           AWS Pricing Discussion
+           AWS Opportunity Support
+           Technical/Support Assistance
+           Next Steps
+           
+           ---------- Amazon Chime Meeting Information ----------
+           
+           You have been invited to an online meeting, powered by Amazon Chime.
+           
+           Download Amazon Chime at https://aws.amazon.com/chime/download
+           For information about creating an Amazon Chime account, see https://aws.amazon.com/chime/getting-started
+           
+           Click to join the meeting: https://chime.aws/7060750648
+           Meeting ID: 7060 75 0648
+           A headset is recommended or you may use your computer’s microphone and speakers.
+           
+           Call in using your phone:
+           United States Toll-Free: +1 855-552-4463
+           Meeting ID: 7060 75 0648
+           One-click Mobile Dial-in (United States Toll-Free): +1 855-552-4463,,,7060750648#
+           United States (1): +1 206-462-5569
+           International: https://chime.aws/dialinnumbers/
+           Dial-in attendees must enter *7 to mute or unmute themselves.
+           
+           To connect from an in-room video system, use one of the following Amazon Chime bridges:
+           SIP video system: 7060750648@meet.chime.in<mailto:7060750648@meet.chime.in> or meet.chime.in
+           H.323 system: 13.248.147.139 or 76.223.18.152
+           If prompted enter the Meeting PIN: 7060750648#
+           
+           ---------- End of Amazon Chime Meeting Information ---------
+    attendees: John Kelly, Enzo Brienza, pin+7060750648@chime.aws, Seward, James, meet@chime.aws
+    16:30 - 17:30
+__start Training Talk - Migrate to Modernize with OpenText Business Applications on AWS (Calendar)
+    location: GoToWebinar
+    notes: [cid:image003.png@01D60CE0.56C44800]
+           
+           Date:  July 1, 2020
+           Time:  9:00 am PST
+           Audience:  Combined (Tech and Sales)
+           
+           Topic: Migrate to Modernize with OpenText Business Applications on AWS
+           Presenters:  Stone Scott/ Director Strategic Cloud Programs, OpenText and Romil Khansaheb<https://phonetool.amazon.com/users/rkkhansa>, Partner Development Manager, AWS
+           
+           See previous Training Talk recordings here<https://broadcast.amazon.com/channels/333> and the calendar of upcoming Training Talks here<https://w.amazon.com/bin/view/AWS_Training_Talk/>.
+           
+           Description: Learn about OpenText, the leader in enterprise information management, and the large opportunity for workload migration onto AWS.
+           
+           To join the training session via web click here: https://attendee.gotowebinar.com/register/4408902396798644752
+    attendees: Mixson, Tiffany, training-talk-t-amer-emea, Seward, James, training-talk-s-amer-emea, Hartung, Lucy, DiMatteo, Beth, Davis, Somer
+    17:00 - 18:00
