@@ -1,3 +1,0 @@
-ANTHROPIC_HOST: https://api.anthropic.com
-GOOSE_MODEL: claude-sonnet-4-20250514
-GOOSE_PROVIDER: anthropic
