@@ -1,32 +1,29 @@
-ANTHROPIC_HOST: https://api.anthropic.com
-GOOSE_MODEL: claude-sonnet-4-20250514
-GOOSE_PROVIDER: anthropic
 extensions:
-  aws-documentation:
-    args:
-      - awslabs.aws-documentation-mcp-server@latest
-    bundled: null
-    cmd: uvx
-    description: Documentation of any AWS tool
-    enabled: true
-    env_keys:
-      - FASTMCP_LOG_LEVEL
-      - AWS_DOCUMENTATION_PARTITION
-    envs: {}
-    name: aws-documentation
-    timeout: 300
-    type: stdio
   aws-cdk-helper:
     args:
-      - awslabs.cdk-mcp-server@latest
+    - awslabs.cdk-mcp-server@latest
     bundled: null
     cmd: uvx
     description: Documentation of any AWS tool
     enabled: true
     env_keys:
-      - FASTMCP_LOG_LEVEL
+    - FASTMCP_LOG_LEVEL
     envs: {}
     name: aws-cdk-helper
+    timeout: 300
+    type: stdio
+  aws-documentation:
+    args:
+    - awslabs.aws-documentation-mcp-server@latest
+    bundled: null
+    cmd: uvx
+    description: Documentation of any AWS tool
+    enabled: true
+    env_keys:
+    - FASTMCP_LOG_LEVEL
+    - AWS_DOCUMENTATION_PARTITION
+    envs: {}
+    name: aws-documentation
     timeout: 300
     type: stdio
   developer:
@@ -36,3 +33,20 @@ extensions:
     name: developer
     timeout: 300
     type: builtin
+  github:
+    args:
+    - -y
+    - '@modelcontextprotocol/server-github'
+    bundled: null
+    cmd: npx
+    description: Interacting with GitHub via personal access token
+    enabled: true
+    env_keys:
+    - GITHUB_TOKEN
+    envs: {}
+    name: github
+    timeout: 300
+    type: stdio
+ANTHROPIC_HOST: https://api.anthropic.com
+GOOSE_MODEL: claude-sonnet-4-20250514
+GOOSE_PROVIDER: anthropic
