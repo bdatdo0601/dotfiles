@@ -10,12 +10,11 @@
   "features": {
     "edit_prediction_provider": "zed"
   },
-  "assistant": {
+  "agent": {
     "default_model": {
       "provider": "anthropic",
       "model": "claude-3-5-haiku-latest"
     },
-    "version": "2"
   },
   "base_keymap": "VSCode",
   "buffer_font_family": "JetBrainsMono Nerd Font",
@@ -27,7 +26,7 @@
   "theme": {
     "mode": "system",
     "light": "One Light",
-    "dark": "Github Dark"
+    "dark": "Catppuccin Mocha"
   },
   "file_types": {
     "Dockerfile": ["Dockerfile", "Dockerfile.*"],
