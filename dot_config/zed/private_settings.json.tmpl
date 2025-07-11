@@ -7,6 +7,15 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "context_servers": {
+    "mcp-server-github": {
+      "source": "extension",
+      "enabled": true,
+      "settings": {
+        "github_personal_access_token": "{{ onepasswordRead "op://local/GitHub/credential" }}"
+      }
+    }
+  },
   "features": {
     "edit_prediction_provider": "zed"
   },
