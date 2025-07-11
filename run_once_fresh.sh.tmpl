@@ -5,6 +5,24 @@ echo "Setting up your Mac..."
 echo "Enable File Vault"
 sudo fdesetup enable || true
 
+# Install Rust
+if test ! $(which rustup); then
+  /bin/sh -c "$(curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs)"
+fi
+
+# Install nvm (node)
+if test ! $(which nvm); then
+  /bin/sh -c "$(curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh)"
+fi
+
+# Install TPM
+if [ ! "$(ls -A ~/.tmux/plugins/tpm 2>/dev/null)" ]; then
+  git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+fi
+
+# Install Python uv
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
 # Create a projects directory if it doesn't exist
 if [ ! -d "$HOME/workspace" ]; then
  mkdir $HOME/workspace
