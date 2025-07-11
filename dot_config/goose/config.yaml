@@ -1,4 +1,21 @@
+ANTHROPIC_HOST: https://api.anthropic.com
+GOOSE_MODEL: claude-sonnet-4-20250514
+GOOSE_PROVIDER: anthropic
 extensions:
+  aws-documentation:
+    args:
+    - awslabs.aws-documentation-mcp-server@latest
+    bundled: null
+    cmd: uvx
+    description: Documentation of any AWS tool
+    enabled: true
+    env_keys:
+    - FASTMCP_LOG_LEVEL
+    - AWS_DOCUMENTATION_PARTITION
+    envs: {}
+    name: aws-documentation
+    timeout: 300
+    type: stdio
   developer:
     bundled: true
     display_name: Developer
@@ -6,6 +23,3 @@ extensions:
     name: developer
     timeout: 300
     type: builtin
-GOOSE_PROVIDER: anthropic
-GOOSE_MODEL: claude-sonnet-4-20250514
-ANTHROPIC_HOST: https://api.anthropic.com
