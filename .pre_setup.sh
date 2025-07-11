@@ -16,4 +16,6 @@ brew bundle --file ./Brewfile
 
 # Setup 1Password
 ONE_PASSWORD_SUBDOMAIN=my
-op account add --address $ONE_PASSWORD_SUBDOMAIN.1password.com --email dat.b.do@gmail.com
+if ! op account list | grep -q "$ONE_PASSWORD_SUBDOMAIN.1password.com"; then
+  op account add --address $ONE_PASSWORD_SUBDOMAIN.1password.com --email dat.b.do@gmail.com
+fi
