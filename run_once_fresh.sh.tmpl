@@ -10,13 +10,6 @@ if test ! $(which rustup); then
   /bin/sh -c "$(curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs)"
 fi
 
-# Re-install oh-my-zsh
-rm -rf $HOME/.oh-my-zsh
-CHSH=no /bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/HEAD/tools/install.sh) --unattended"
-cp -r $HOME/.oh-my-zsh/ $(chezmoi source-path)/oh-my-zsh
-mv -f $HOME/.zshrc.pre-oh-my-zsh $HOME/.zshrc
-
-
 # Check for Homebrew and install if we don't have it
 # Hash to watch brewfile content {{ include "Brewfile" | sha256sum }}
 if test ! $(which brew); then
@@ -29,8 +22,6 @@ fi
 # Setup 1Password
 ONE_PASSWORD_SUBDOMAIN=my
 op account add --address $ONE_PASSWORD_SUBDOMAIN.1password.com --email {{ .personal_email }}
-eval $(op signin --account $ONE_PASSWORD_SUBDOMAIN)
-
 
 # Install nvm (node)
 if test ! $(which nvm); then
@@ -41,7 +32,6 @@ fi
 brew update
 
 # Install all our dependencies with bundle (See Brewfile)
-brew tap homebrew/bundle
 brew bundle --file ./Brewfile
 
 # Create a projects directory if it doesn't exist
