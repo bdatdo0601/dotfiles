@@ -2,3 +2,9 @@ export GITHUB_USERNAME='bdatdo0601'
 export EDITOR='nvim'
 export WORKSPACE="$HOME/workspace"
 export ANTHROPIC_API_KEY="{{ onepasswordRead "op://local/ClaudeAPI/credential" }}"
+# MCP ENV Specific
+## AWS
+export FASTMCP_LOG_LEVEL="ERROR"
+export AWS_DOCUMENTATION_PARTITION="aws"
+export GITHUB_PERSONAL_ACCESS_TOKEN="{{ onepasswordRead "op://local/GitHub/credential" }}"
+export GITHUB_TOKEN="{{ onepasswordRead "op://local/GitHub/credential" }}"
