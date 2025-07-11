@@ -3,3 +3,4 @@
 **/.DS_Store
 path.zsh.zwc
 dot_config/goose/config.yaml.bak*
+dot_config/zed/conversations/
