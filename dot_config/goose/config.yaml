@@ -1,5 +1,3 @@
-GOOSE_MODEL: anthropic/claude-sonnet-4
-ANTHROPIC_HOST: https://api.anthropic.com
 extensions:
   aws-cdk-helper:
     args:
@@ -60,4 +58,8 @@ extensions:
     name: github
     timeout: 300
     type: stdio
+GOOSE_ROUTER_TOOL_SELECTION_STRATEGY: vector
+GOOSE_MODE: smart_approve
 GOOSE_PROVIDER: openrouter
+ANTHROPIC_HOST: https://api.anthropic.com
+GOOSE_MODEL: anthropic/claude-sonnet-4
