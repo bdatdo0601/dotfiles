@@ -87,6 +87,7 @@ cask 'font-roboto'
 cask 'font-source-code-pro-for-powerline'
 cask 'font-source-code-pro'
 cask 'font-jetbrains-mono-nerd-font'
+cask 'font-fontawesome'
 
 # Mac App Store
 mas 'noteshub-notes-kanban-boards', id: 1621210753
