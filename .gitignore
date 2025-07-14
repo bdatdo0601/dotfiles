@@ -1,6 +1,16 @@
 .DS_Store
 */.DS_Store
 **/.DS_Store
-path.zsh.zwc
 dot_config/goose/config.yaml.bak*
 dot_config/zed/conversations/
+*.zwc
+**/*.zwc
+dot_oh-my-zsh/cache/**/*
+dot_oh-my-zsh/cache/*
+dot_oh-my-zsh/lib/**/*
+dot_oh-my-zsh/lib/*
+dot_config/zed/conversations/*
+dot_config/zed/conversations/**/*
+dot_config/zed/prompts/*
+dot_config/zed/prompts/**/*
+dot_config/goose/config.yaml.bak*
