@@ -43,6 +43,7 @@ brew 'pipx'
 brew 'libpq'
 brew 'postgresql'
 brew 'block-goose-cli'
+brew 'flyctl'
 
 # Apps
 cask '1password'
