@@ -11,8 +11,8 @@ fi
 # Update Homebrew recipes
 brew update
 
-# Install all our dependencies with bundle (See Brewfile)
-brew bundle --file ./Brewfile
+brew install --cask 1password
+brew install --cask 1password-cli
 
 # Setup 1Password
 ONE_PASSWORD_SUBDOMAIN=my
