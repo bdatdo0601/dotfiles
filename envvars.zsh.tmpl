@@ -8,3 +8,19 @@ export OPENROUTER_API_KEY="{{ onepasswordRead "op://local/OpenRouterAPI/credenti
 export FASTMCP_LOG_LEVEL="ERROR"
 export AWS_DOCUMENTATION_PARTITION="aws"
 export GITHUB_PERSONAL_ACCESS_TOKEN="{{ onepasswordRead "op://local/GitHub/credential" }}"
+{{- if .isServer }}
+# KHOJ Setup
+export KHOJ_DJANGO_SECRET_KEY="{{ onepasswordRead "op://local/DjangoSecretKey/password" }}"
+export KHOJ_ADMIN_EMAIL="{{ onepasswordRead "op://local/KhojSelfHosted/username" }}"
+export KHOJ_ADMIN_PASSWORD="{{ onepasswordRead "op://local/DjangoSecretKey/password" }}"
+export KHOJ_DEBUG=True
+export KHOJ_NO_HTTPS=False
+export KHOJ_TELEMENTRY_DISABLE=True
+export KHOJ_OPERATOR_ENABLED=True
+export KHOJ=DEFAULT_CHAT_MODEL=claude-sonnet-4-0
+export SERPER_DEV_API_KEY="{{ onepasswordRead "op://local/SerperWebScrape/credential" }}"
+export OLOSTEP_API_KEY="{{ onepasswordRead "op://local/olostep/credential" }}"
+export E2B_API_KEY="{{ onepasswordRead "op://local/E2B/credential" }}"
+export RESEND_API_KEY="{{ onepasswordRead "op://local/ResendAPI/credential" }}
+export RESEND_EMAIL=dat.b.do@gmail.com
+{{ end -}}

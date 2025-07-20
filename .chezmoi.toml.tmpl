@@ -1,6 +1,7 @@
 {{- $alias := promptString "alias" "bdatdo0601" -}}
 {{- $email := promptString "email" "dat.b.do@gmail.com" -}}
 {{- $machineName := promptString "machineName" "Mac" -}}
+{{- $isServer := promptBool "isServer" false -}}
 
 encryption = "age"
 [age]
@@ -10,6 +11,7 @@ encryption = "age"
     alias = {{ $alias | quote }}
 	personal_email = "dat.b.do@gmail.com"
     machineName = {{ $machineName | quote }}
+    isServer = {{ $isServer }}
 [scriptEnv]
     MY_VAR = "my_value"
 [git]
