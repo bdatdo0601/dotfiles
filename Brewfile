@@ -43,7 +43,8 @@ brew 'pipx'
 brew 'libpq'
 brew 'postgresql'
 brew 'block-goose-cli'
-brew 'flyctl'
+brew 'neonctl'
+brew 'vercel-cli'
 
 # Apps
 cask '1password'
