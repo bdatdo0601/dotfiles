@@ -39,7 +39,7 @@
   "theme": {
     "mode": "system",
     "light": "One Light",
-    "dark": "One Dark Pro"
+    "dark": "GitHub Dark Default"
   },
   "file_types": {
     "Dockerfile": ["Dockerfile", "Dockerfile.*"],
