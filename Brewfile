@@ -45,6 +45,7 @@ brew 'postgresql'
 brew 'block-goose-cli'
 brew 'neonctl'
 brew 'vercel-cli'
+brew 'livekit'
 
 # Apps
 cask '1password'
