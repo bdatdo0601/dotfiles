@@ -1,8 +1,13 @@
 export GITHUB_USERNAME='bdatdo0601'
 export EDITOR='nvim'
 export WORKSPACE="$HOME/workspace"
+{{- if eq .email "dat.b.do@gmail.com" }}
 export ANTHROPIC_API_KEY="{{ onepasswordRead "op://local/ClaudeAPI/credential" }}"
 export OPENROUTER_API_KEY="{{ onepasswordRead "op://local/OpenRouterAPI/credential" }}"
+{{ end -}}
+{{- if eq .email "dat@purplefish.com" }}
+export ANTHROPIC_API_KEY="{{ onepasswordRead "op://local/PPFAnthropicAPI/credential" }}"
+{{ end -}}
 # MCP ENV Specific
 ## AWS
 export FASTMCP_LOG_LEVEL="ERROR"
