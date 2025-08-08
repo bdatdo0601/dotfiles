@@ -35,7 +35,8 @@
     "one-dark-pro": true,
     "catppuccin-icons": true,
     "markdown-oxide": true,
-    "templ": true
+    "templ": true,
+    "ruff": true
   },
   "theme": {
     "mode": "system",
