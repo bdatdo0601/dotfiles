@@ -36,7 +36,8 @@
     "catppuccin-icons": true,
     "markdown-oxide": true,
     "templ": true,
-    "ruff": true
+    "ruff": true,
+    "ty": true
   },
   "theme": {
     "mode": "system",
@@ -53,11 +54,10 @@
         "require_config_file": true
       }
     },
-    "pyright": {
-      "settings": {
-        "python.analysis": {
-          "diagnosticMode": "workspace"
-        }
+    "ty": {
+      "binary": {
+        "path": "/Users/datdo/.local/bin/ty",
+        "arguments": ["server"]
       }
     },
     "ruff": {
@@ -101,7 +101,7 @@
       }
     },
     "Python": {
-      "language_servers": ["ruff"],
+      "language_servers": ["ruff", "ty"],
       "format_on_save": "on",
       "formatter": [
         {
