@@ -10,9 +10,10 @@
   "icon_theme": "Catppuccin Macchiato",
   "context_servers": {},
   "features": {
-    "edit_prediction_provider": "zed"
+    "edit_prediction_provider": "copilot"
   },
   "agent": {
+    "default_profile": "ask",
     "default_model": {
       "provider": "zed.dev",
       "model": "claude-sonnet-4"
@@ -54,8 +55,7 @@
     "pyright": {
       "settings": {
         "python.analysis": {
-          "diagnosticMode": "workspace",
-          "typeCheckingMode": "off"
+          "diagnosticMode": "workspace"
         }
       }
     },
