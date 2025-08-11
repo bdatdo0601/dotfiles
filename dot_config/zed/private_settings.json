@@ -7,17 +7,9 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
-  "icon_theme": "Catppuccin Macchiato",
-  "context_servers": {},
+  "theme": "Ayu Dark",
   "features": {
-    "edit_prediction_provider": "copilot"
-  },
-  "agent": {
-    "default_profile": "ask",
-    "default_model": {
-      "provider": "zed.dev",
-      "model": "claude-sonnet-4"
-    }
+    "edit_prediction_provider": "zed"
   },
   "base_keymap": "VSCode",
   "buffer_font_family": "JetBrainsMono Nerd Font",
@@ -25,24 +17,6 @@
   "buffer_font_size": 12,
   "edit_predictions": {
     "mode": "eager"
-  },
-  "auto_install_extensions": {
-    "biome": true,
-    "toml": true,
-    "html": true,
-    "Dockerfile": true,
-    "git-firefly": true,
-    "one-dark-pro": true,
-    "catppuccin-icons": true,
-    "markdown-oxide": true,
-    "templ": true,
-    "ruff": true,
-    "ty": true
-  },
-  "theme": {
-    "mode": "system",
-    "light": "One Light",
-    "dark": "GitHub Dark Default"
   },
   "file_types": {
     "Dockerfile": ["Dockerfile", "Dockerfile.*"],
@@ -54,10 +28,15 @@
         "require_config_file": true
       }
     },
-    "ty": {
-      "binary": {
-        "path": "/Users/datdo/.local/bin/ty",
-        "arguments": ["server"]
+    "pyright": {
+      "settings": {
+        "python.analysis": {
+          "diagnosticMode": "workspace",
+          "typeCheckingMode": "strict"
+        },
+        "python": {
+          "pythonPath": ".venv/bin/python"
+        }
       }
     },
     "ruff": {
@@ -88,20 +67,8 @@
         "show_type_hints": true
       }
     },
-    "terminal": {
-      "font_family": "JetBrainsMono Nerd Font",
-      "line_height": "standard",
-      "env": {
-        "EDITOR": "zed --wait"
-      },
-      "formatter": {
-        "language_server": {
-          "name": "biome"
-        }
-      }
-    },
     "Python": {
-      "language_servers": ["ruff", "ty"],
+      "language_servers": ["ruff"],
       "format_on_save": "on",
       "formatter": [
         {
