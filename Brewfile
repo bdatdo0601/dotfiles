@@ -79,6 +79,7 @@ cask 'yt-music'
 cask 'obsidian'
 cask 'zed'
 cask 'claude-code'
+cask 'shortwave'
 
 # Quicklook
 cask 'qlmarkdown'
