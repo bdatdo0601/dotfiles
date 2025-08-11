@@ -265,7 +265,7 @@ if.app-id = 'com.tinyspeck.slackmacgap'
 run = "move-node-to-workspace M"
 
 [[on-window-detected]]
-if.app-id = 'notion.mail.id'
+if.app-id = 'com.electron.shortwave'
 run = "move-node-to-workspace M"
 
 [[on-window-detected]]
