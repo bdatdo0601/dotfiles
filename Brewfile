@@ -46,6 +46,7 @@ brew 'block-goose-cli'
 brew 'neonctl'
 brew 'vercel-cli'
 brew 'livekit'
+brew 'orbstack'
 
 # Apps
 cask '1password'
