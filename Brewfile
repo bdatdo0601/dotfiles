@@ -46,6 +46,7 @@ brew 'block-goose-cli'
 brew 'neonctl'
 brew 'vercel-cli'
 brew 'livekit'
+brew 'livekit-cli'
 brew 'orbstack'
 
 # Apps
