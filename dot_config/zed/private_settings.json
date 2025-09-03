@@ -13,8 +13,8 @@
   },
   "base_keymap": "VSCode",
   "buffer_font_family": "JetBrainsMono Nerd Font",
-  "ui_font_size": 14,
-  "buffer_font_size": 12,
+  "ui_font_size": 20,
+  "buffer_font_size": 20,
   "edit_predictions": {
     "mode": "eager"
   },
@@ -68,7 +68,7 @@
       }
     },
     "Python": {
-      "language_servers": ["ruff", "pyright"],
+      "language_servers": ["ruff", "ty", "pyright"],
       "format_on_save": "on",
       "formatter": [
         {
