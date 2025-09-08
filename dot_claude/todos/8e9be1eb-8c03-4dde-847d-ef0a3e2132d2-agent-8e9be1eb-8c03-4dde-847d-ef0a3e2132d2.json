@@ -1,0 +1,27 @@
+[
+  {
+    "content": "Fix Callable type arguments in flow_manager.py",
+    "status": "completed",
+    "id": "1"
+  },
+  {
+    "content": "Fix set type argument in schema.py",
+    "status": "completed",
+    "id": "2"
+  },
+  {
+    "content": "Fix Optional type issues in state_machine.py",
+    "status": "completed",
+    "id": "3"
+  },
+  {
+    "content": "Fix LiveKit API usage in multi_voice_agent.py",
+    "status": "completed",
+    "id": "4"
+  },
+  {
+    "content": "Run pyright to verify all fixes",
+    "status": "completed",
+    "id": "5"
+  }
+]

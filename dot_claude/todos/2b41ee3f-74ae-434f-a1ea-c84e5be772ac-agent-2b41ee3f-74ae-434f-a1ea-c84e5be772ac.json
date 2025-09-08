@@ -1,0 +1,27 @@
+[
+  {
+    "content": "Examine current multi_voice_agent.py implementation",
+    "status": "completed",
+    "id": "1"
+  },
+  {
+    "content": "Check latest LiveKit documentation for voice agents",
+    "status": "completed",
+    "id": "2"
+  },
+  {
+    "content": "Research Deepgram integration with LiveKit",
+    "status": "completed",
+    "id": "3"
+  },
+  {
+    "content": "Research Cartesia integration with LiveKit",
+    "status": "completed",
+    "id": "4"
+  },
+  {
+    "content": "Rework multi_voice_agent.py with Deepgram and Cartesia",
+    "status": "completed",
+    "id": "5"
+  }
+]

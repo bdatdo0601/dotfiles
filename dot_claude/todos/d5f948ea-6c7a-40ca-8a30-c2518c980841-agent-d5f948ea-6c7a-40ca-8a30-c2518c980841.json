@@ -1,0 +1,27 @@
+[
+  {
+    "content": "Add AGENT_AUTH_TOKEN_SECRET to SecretConfig",
+    "status": "completed",
+    "id": "1"
+  },
+  {
+    "content": "Add JWT token generation to PurplefishClient",
+    "status": "completed",
+    "id": "2"
+  },
+  {
+    "content": "Update PurplefishClient to use bearer token",
+    "status": "completed",
+    "id": "3"
+  },
+  {
+    "content": "Update routing agent to pass auth token secret",
+    "status": "completed",
+    "id": "4"
+  },
+  {
+    "content": "Add tests for bearer token authentication",
+    "status": "completed",
+    "id": "5"
+  }
+]

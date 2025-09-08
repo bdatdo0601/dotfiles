@@ -1,0 +1,27 @@
+[
+  {
+    "content": "Create types/call-script.ts with TypeScript interfaces",
+    "status": "in_progress",
+    "id": "6"
+  },
+  {
+    "content": "Create utils/script-migrator.ts for migration logic",
+    "status": "pending",
+    "id": "7"
+  },
+  {
+    "content": "Create utils/script-validator.ts for validation",
+    "status": "pending",
+    "id": "8"
+  },
+  {
+    "content": "Create utils/script-executor.ts for runtime execution",
+    "status": "pending",
+    "id": "9"
+  },
+  {
+    "content": "Create examples/migrated-script.json with example",
+    "status": "pending",
+    "id": "10"
+  }
+]

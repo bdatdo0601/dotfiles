@@ -1,0 +1,22 @@
+[
+  {
+    "content": "Add routing_agent to render.yml",
+    "status": "completed",
+    "id": "1"
+  },
+  {
+    "content": "Add routing_agent to docker-compose.yml",
+    "status": "completed",
+    "id": "2"
+  },
+  {
+    "content": "Add run_routing_agent command to scripts/cli.py",
+    "status": "completed",
+    "id": "3"
+  },
+  {
+    "content": "Update pyproject.toml with routing_agent script",
+    "status": "completed",
+    "id": "4"
+  }
+]

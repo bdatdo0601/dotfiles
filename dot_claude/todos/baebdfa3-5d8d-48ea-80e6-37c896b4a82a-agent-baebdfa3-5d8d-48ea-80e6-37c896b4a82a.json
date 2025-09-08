@@ -1,0 +1,22 @@
+[
+  {
+    "content": "Update top-level structure: rename fields and keep existing structure",
+    "status": "completed",
+    "id": "1"
+  },
+  {
+    "content": "Convert nodes to proper TaskConfiguration format",
+    "status": "completed",
+    "id": "2"
+  },
+  {
+    "content": "Fix datapoints_to_collect structure in qualifier nodes",
+    "status": "completed",
+    "id": "3"
+  },
+  {
+    "content": "Update failure_handling to proper strategy objects",
+    "status": "completed",
+    "id": "4"
+  }
+]

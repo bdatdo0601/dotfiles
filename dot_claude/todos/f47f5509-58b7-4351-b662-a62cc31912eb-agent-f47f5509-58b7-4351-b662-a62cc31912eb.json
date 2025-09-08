@@ -1,0 +1,22 @@
+[
+  {
+    "content": "Check git diff from main branch to see routing agent changes",
+    "status": "completed",
+    "id": "1"
+  },
+  {
+    "content": "Analyze the changes to understand what needs testing",
+    "status": "completed",
+    "id": "2"
+  },
+  {
+    "content": "Write tests for the new/modified routing agent functionality",
+    "status": "completed",
+    "id": "3"
+  },
+  {
+    "content": "Run tests to ensure they work correctly",
+    "status": "completed",
+    "id": "4"
+  }
+]

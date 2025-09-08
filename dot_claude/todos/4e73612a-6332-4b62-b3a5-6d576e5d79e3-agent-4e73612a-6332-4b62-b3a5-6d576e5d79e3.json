@@ -1,0 +1,32 @@
+[
+  {
+    "content": "Fix unused imports in kombo/providers/sync.ts",
+    "status": "completed",
+    "id": "1"
+  },
+  {
+    "content": "Fix unused parameter and empty constructor in kombo/providers/url.ts",
+    "status": "completed",
+    "id": "2"
+  },
+  {
+    "content": "Fix template literal type errors in inngest/migrations/add-opt-in-stage.ts",
+    "status": "completed",
+    "id": "3"
+  },
+  {
+    "content": "Fix template literal and toString errors in inngest/purplefish/stage.ts",
+    "status": "completed",
+    "id": "4"
+  },
+  {
+    "content": "Fix template literal type errors in inngest/tempworks/crons.ts",
+    "status": "completed",
+    "id": "5"
+  },
+  {
+    "content": "Fix strict-boolean-expressions warnings",
+    "status": "completed",
+    "id": "6"
+  }
+]

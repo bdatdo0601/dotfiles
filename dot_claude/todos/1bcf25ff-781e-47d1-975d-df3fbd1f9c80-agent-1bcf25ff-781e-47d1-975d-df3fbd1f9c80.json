@@ -1,0 +1,12 @@
+[
+  {
+    "content": "Add description field to each datapoint schema",
+    "status": "completed",
+    "id": "1"
+  },
+  {
+    "content": "Update QualifierAgent to use descriptions in prompt",
+    "status": "completed",
+    "id": "2"
+  }
+]

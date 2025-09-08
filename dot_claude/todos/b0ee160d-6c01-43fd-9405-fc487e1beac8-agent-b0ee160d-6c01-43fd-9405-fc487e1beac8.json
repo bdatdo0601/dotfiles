@@ -1,0 +1,47 @@
+[
+  {
+    "content": "Run lint command to identify all issues",
+    "status": "completed",
+    "id": "1"
+  },
+  {
+    "content": "Fix linting issues automatically if possible",
+    "status": "completed",
+    "id": "2"
+  },
+  {
+    "content": "Manually fix any remaining issues",
+    "status": "completed",
+    "id": "3"
+  },
+  {
+    "content": "Verify all lint issues are resolved",
+    "status": "completed",
+    "id": "4"
+  },
+  {
+    "content": "Fix participant-availability-content.tsx errors",
+    "status": "completed",
+    "id": "5"
+  },
+  {
+    "content": "Fix scheduling-attempts-table.tsx errors",
+    "status": "completed",
+    "id": "6"
+  },
+  {
+    "content": "Fix kombo-stage-select.tsx errors",
+    "status": "completed",
+    "id": "7"
+  },
+  {
+    "content": "Fix availability-router.ts errors",
+    "status": "completed",
+    "id": "8"
+  },
+  {
+    "content": "Fix scheduling-router.ts errors",
+    "status": "completed",
+    "id": "9"
+  }
+]

@@ -1,0 +1,37 @@
+[
+  {
+    "content": "Run make test to identify all failing tests",
+    "status": "completed",
+    "id": "1"
+  },
+  {
+    "content": "Fix test_generate_context in test_conversation_context.py",
+    "status": "completed",
+    "id": "2"
+  },
+  {
+    "content": "Fix test failures in test_conversation_context.py",
+    "status": "completed",
+    "id": "3"
+  },
+  {
+    "content": "Fix test failures in test_orchestrator.py",
+    "status": "completed",
+    "id": "4"
+  },
+  {
+    "content": "Fix test_orchestrator_with_no_room_name in test_orchestrator_recording.py",
+    "status": "completed",
+    "id": "5"
+  },
+  {
+    "content": "Fix remaining test_conversation_context.py failures",
+    "status": "completed",
+    "id": "6"
+  },
+  {
+    "content": "Verify all tests pass",
+    "status": "completed",
+    "id": "7"
+  }
+]
