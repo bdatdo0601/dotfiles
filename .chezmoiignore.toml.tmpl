@@ -1,5 +1,5 @@
-helpers/
-helpers/**
+**/helpers/
+**/helpers/**
 
 README.md
 
@@ -11,30 +11,34 @@ README.md
 .personal-file
 {{- end }}
 
+{{- if ne .email "dat@purplefish.com" }}
+.personal-file
+{{- end }}
+
 .gitignore
-alfred_pref/
-alfred_pref/**
-encrypted_alfred/
-encrypted_alfred/**
+**/alfred_pref/
+**/alfred_pref/**
+**/encrypted_alfred/
+**/encrypted_alfred/**
 dygma_config/
 dygma_config/**
 path.zsh.zwc
 *.zwc
 **/*.zwc
-.oh-my-zsh/cache/**/*
-.oh-my-zsh/cache/*
-.oh-my-zsh/cache
-.config/zed/conversations/*
-.config/zed/conversations/**/*
-.config/zed/prompts/*
-.config/zed/prompts/**/*
-.config/goose/config.yaml.bak*
+**/.oh-my-zsh/cache/**/*
+**/.oh-my-zsh/cache/*
+**/.oh-my-zsh/cache
+**/.config/zed/conversations/*
+**/.config/zed/conversations/**/*
+**/.config/zed/prompts/*
+**/.config/zed/prompts/**/*
+**/.config/goose/config.yaml.bak*
 
-.claude/projects/
-.claude/projects/**
-.claude/shell-snapshots/
-.claude/shell-snapshots/**
-.claude/statsig/
-.claude/statsig/**
-.claude/todos/
-.claude/todos/**
+**/.claude/projects/
+**/.claude/projects/**
+**/.claude/shell-snapshots/
+**/.claude/shell-snapshots/**
+**/.claude/statsig/
+**/.claude/statsig/**
+**/.claude/todos/
+**/.claude/todos/**
