@@ -68,6 +68,9 @@
     "source.organizeImports.biome": true
   },
   "languages": {
+    "Prisma": {
+      "tab_size": 4
+    },
     "JavaScript": { "formatter": { "language_server": { "name": "biome" } } },
     "TSX": { "formatter": { "language_server": { "name": "biome" } } },
     "JSON": { "formatter": { "language_server": { "name": "biome" } } },
