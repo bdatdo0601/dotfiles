@@ -49,6 +49,7 @@ brew 'livekit'
 brew 'livekit-cli'
 brew 'orbstack'
 brew 'zoxide'
+brew 'fd'
 
 # Apps
 cask '1password'
