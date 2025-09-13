@@ -9,6 +9,7 @@ alias compile="commit 'compile'"
 alias version="commit 'version'"
 alias vim='nvim'
 alias npm='pnpm'
+alias cd='z'
 
 # Directories
 alias dotfiles="cd $DOTFILES"
