@@ -1,0 +1,22 @@
+[
+  {
+    "content": "Remove old flow manager and schema files",
+    "status": "completed",
+    "id": "1"
+  },
+  {
+    "content": "Update schema to support default agents at script level",
+    "status": "completed",
+    "id": "2"
+  },
+  {
+    "content": "Allow node-level agent overrides",
+    "status": "completed",
+    "id": "3"
+  },
+  {
+    "content": "Update manager to handle agent defaults",
+    "status": "completed",
+    "id": "4"
+  }
+]

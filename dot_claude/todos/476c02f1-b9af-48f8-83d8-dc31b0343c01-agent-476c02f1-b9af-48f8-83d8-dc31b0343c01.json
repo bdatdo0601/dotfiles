@@ -1,0 +1,67 @@
+[
+  {
+    "content": "Fix linting issues in test files",
+    "status": "completed",
+    "id": "1"
+  },
+  {
+    "content": "Add missing newlines at end of files",
+    "status": "completed",
+    "id": "2"
+  },
+  {
+    "content": "Fix import ordering issues",
+    "status": "completed",
+    "id": "3"
+  },
+  {
+    "content": "Fix missing MultilingualModel patch",
+    "status": "completed",
+    "id": "4"
+  },
+  {
+    "content": "Run tests to verify everything still works",
+    "status": "completed",
+    "id": "5"
+  },
+  {
+    "content": "Update CLAUDE.md to specify pyright for voice_agent",
+    "status": "completed",
+    "id": "6"
+  },
+  {
+    "content": "Fix pyright errors - DataCollectionAgent imports",
+    "status": "completed",
+    "id": "7"
+  },
+  {
+    "content": "Fix pyright errors - transformer function type checks",
+    "status": "completed",
+    "id": "8"
+  },
+  {
+    "content": "Fix pyright errors - CallScript initialization in integration tests",
+    "status": "completed",
+    "id": "9"
+  },
+  {
+    "content": "Fix pyright errors - test_manager.py mock issues",
+    "status": "completed",
+    "id": "10"
+  },
+  {
+    "content": "Fix pyright errors - test_orchestrator.py attribute issues",
+    "status": "completed",
+    "id": "11"
+  },
+  {
+    "content": "Fix pyright errors - ConversationContext import",
+    "status": "completed",
+    "id": "12"
+  },
+  {
+    "content": "Run final pyright check on all voice_agent tests",
+    "status": "completed",
+    "id": "13"
+  }
+]

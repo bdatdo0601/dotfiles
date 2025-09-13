@@ -1,0 +1,12 @@
+[
+  {
+    "content": "Update README.md with recent performance optimization",
+    "status": "in_progress",
+    "id": "1"
+  },
+  {
+    "content": "Update CLAUDE.md with recent performance optimization",
+    "status": "pending",
+    "id": "2"
+  }
+]

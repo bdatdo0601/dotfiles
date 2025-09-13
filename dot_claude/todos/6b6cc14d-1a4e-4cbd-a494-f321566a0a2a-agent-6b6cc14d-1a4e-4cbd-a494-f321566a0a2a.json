@@ -1,0 +1,17 @@
+[
+  {
+    "content": "Run lint command to identify all issues",
+    "status": "completed",
+    "id": "1"
+  },
+  {
+    "content": "Fix all linting and type checking issues",
+    "status": "in_progress",
+    "id": "2"
+  },
+  {
+    "content": "Fix .claude/settings.local.json formatting issue",
+    "status": "completed",
+    "id": "3"
+  }
+]

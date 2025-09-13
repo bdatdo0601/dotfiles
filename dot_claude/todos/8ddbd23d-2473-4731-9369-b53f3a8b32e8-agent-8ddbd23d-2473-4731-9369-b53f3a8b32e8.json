@@ -1,0 +1,27 @@
+[
+  {
+    "content": "Find and analyze current routing agent implementation",
+    "status": "completed",
+    "id": "1"
+  },
+  {
+    "content": "Rework logic to check room metadata first for opportunity_id and room_name",
+    "status": "pending",
+    "id": "2"
+  },
+  {
+    "content": "Handle participant extraction logic (standard vs SIP)",
+    "status": "pending",
+    "id": "3"
+  },
+  {
+    "content": "Update room metadata with engagement data",
+    "status": "pending",
+    "id": "4"
+  },
+  {
+    "content": "Test the updated routing logic",
+    "status": "pending",
+    "id": "5"
+  }
+]

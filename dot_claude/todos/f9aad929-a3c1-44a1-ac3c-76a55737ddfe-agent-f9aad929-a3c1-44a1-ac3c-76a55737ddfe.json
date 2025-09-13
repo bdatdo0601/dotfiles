@@ -1,0 +1,52 @@
+[
+  {
+    "content": "Run linting checks to identify issues",
+    "status": "completed",
+    "id": "1"
+  },
+  {
+    "content": "Run type checking with ty",
+    "status": "completed",
+    "id": "2"
+  },
+  {
+    "content": "Run type checking with pyright",
+    "status": "completed",
+    "id": "3"
+  },
+  {
+    "content": "Run tests to identify failures",
+    "status": "completed",
+    "id": "4"
+  },
+  {
+    "content": "Fix any linting issues found",
+    "status": "completed",
+    "id": "5"
+  },
+  {
+    "content": "Rewrite routing agent tests to remove non-existent methods",
+    "status": "completed",
+    "id": "6"
+  },
+  {
+    "content": "Fix orchestrator recording test fixture names",
+    "status": "completed",
+    "id": "7"
+  },
+  {
+    "content": "Fix call script loader test failures",
+    "status": "completed",
+    "id": "8"
+  },
+  {
+    "content": "Remove old broken routing tests",
+    "status": "completed",
+    "id": "9"
+  },
+  {
+    "content": "Run tests again to verify fixes",
+    "status": "completed",
+    "id": "10"
+  }
+]

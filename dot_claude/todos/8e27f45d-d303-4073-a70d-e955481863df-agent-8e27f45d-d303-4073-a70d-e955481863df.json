@@ -1,0 +1,17 @@
+[
+  {
+    "content": "Add tests for callOpportunityImmediately with v3 schema version",
+    "status": "completed",
+    "id": "1"
+  },
+  {
+    "content": "Add tests for v2/legacy schema version",
+    "status": "completed",
+    "id": "2"
+  },
+  {
+    "content": "Run tests to ensure they pass",
+    "status": "completed",
+    "id": "3"
+  }
+]

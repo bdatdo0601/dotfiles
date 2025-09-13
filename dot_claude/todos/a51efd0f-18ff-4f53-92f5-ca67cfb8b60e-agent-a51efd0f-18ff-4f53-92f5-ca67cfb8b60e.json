@@ -1,0 +1,47 @@
+[
+  {
+    "content": "Create new test file for VoiceAgentConversationContext",
+    "status": "completed",
+    "id": "1"
+  },
+  {
+    "content": "Add mock_external_service_clients fixture to voice_agent conftest",
+    "status": "completed",
+    "id": "2"
+  },
+  {
+    "content": "Update VoiceAgentManager tests to use ExternalServiceClients",
+    "status": "completed",
+    "id": "3"
+  },
+  {
+    "content": "Update Orchestrator tests to use ExternalServiceClients",
+    "status": "completed",
+    "id": "4"
+  },
+  {
+    "content": "Update voice_agent integration tests to use ExternalServiceClients",
+    "status": "completed",
+    "id": "5"
+  },
+  {
+    "content": "Add mock_external_service_clients fixture to routing_agent conftest",
+    "status": "completed",
+    "id": "6"
+  },
+  {
+    "content": "Update RoutingAgent tests to use ExternalServiceClients",
+    "status": "completed",
+    "id": "7"
+  },
+  {
+    "content": "Update routing_agent integration tests to use ExternalServiceClients",
+    "status": "completed",
+    "id": "8"
+  },
+  {
+    "content": "Run tests to verify all changes work correctly",
+    "status": "completed",
+    "id": "9"
+  }
+]

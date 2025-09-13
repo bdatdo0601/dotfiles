@@ -1,0 +1,17 @@
+[
+  {
+    "content": "Replace voice_assistant import with voice",
+    "status": "completed",
+    "id": "1"
+  },
+  {
+    "content": "Replace VoiceAssistant class with voice.Agent",
+    "status": "completed",
+    "id": "2"
+  },
+  {
+    "content": "Update all voice_assistant references",
+    "status": "completed",
+    "id": "3"
+  }
+]

@@ -1,0 +1,27 @@
+[
+  {
+    "content": "Check if jsonschema is already installed",
+    "status": "completed",
+    "id": "1"
+  },
+  {
+    "content": "Rewrite SchemaBasedToolFactory using jsonschema",
+    "status": "completed",
+    "id": "2"
+  },
+  {
+    "content": "Simplify tool creation logic",
+    "status": "completed",
+    "id": "3"
+  },
+  {
+    "content": "Test with it_support_hiring_script",
+    "status": "completed",
+    "id": "4"
+  },
+  {
+    "content": "Run linting and type checking",
+    "status": "completed",
+    "id": "5"
+  }
+]

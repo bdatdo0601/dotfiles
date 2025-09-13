@@ -1,0 +1,57 @@
+[
+  {
+    "content": "Update auth-router.ts",
+    "status": "completed",
+    "id": "1"
+  },
+  {
+    "content": "Update user-router.ts",
+    "status": "completed",
+    "id": "2"
+  },
+  {
+    "content": "Update engagement-router.ts",
+    "status": "completed",
+    "id": "3"
+  },
+  {
+    "content": "Update candidate-router.ts",
+    "status": "completed",
+    "id": "4"
+  },
+  {
+    "content": "Update job-router.ts (complex, 22+ imports)",
+    "status": "completed",
+    "id": "5"
+  },
+  {
+    "content": "Update email, sms-message, and voice-prompt routers",
+    "status": "completed",
+    "id": "6"
+  },
+  {
+    "content": "Update integration, script-template routers",
+    "status": "completed",
+    "id": "7"
+  },
+  {
+    "content": "Update stage, organization, scheduling, notification-template, mailbox, livekit routers",
+    "status": "completed",
+    "id": "8"
+  },
+  {
+    "content": "Update remaining routers (debug, web-screening, calendar-invite, etc.)",
+    "status": "completed",
+    "id": "9"
+  },
+  {
+    "content": "Format code with prettier",
+    "status": "completed",
+    "id": "10"
+  },
+  {
+    "content": "Test type checking and linting",
+    "status": "completed",
+    "id": "11"
+  }
+]

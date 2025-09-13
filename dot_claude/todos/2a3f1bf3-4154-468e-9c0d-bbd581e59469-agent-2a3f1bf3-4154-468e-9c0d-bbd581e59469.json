@@ -1,0 +1,17 @@
+[
+  {
+    "content": "Simplify environment detection to use single is_prod boolean flag",
+    "status": "completed",
+    "id": "1"
+  },
+  {
+    "content": "Update configure_for_environment function to use is_prod flag",
+    "status": "completed",
+    "id": "2"
+  },
+  {
+    "content": "Test the simplified configuration",
+    "status": "completed",
+    "id": "3"
+  }
+]

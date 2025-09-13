@@ -1,0 +1,22 @@
+[
+  {
+    "content": "Review existing test file for conversation_context.py",
+    "status": "completed",
+    "id": "1"
+  },
+  {
+    "content": "Add test for cloud upload in _write_final_log",
+    "status": "completed",
+    "id": "2"
+  },
+  {
+    "content": "Add test for error handling in cloud upload",
+    "status": "completed",
+    "id": "3"
+  },
+  {
+    "content": "Run tests to ensure they pass",
+    "status": "completed",
+    "id": "4"
+  }
+]

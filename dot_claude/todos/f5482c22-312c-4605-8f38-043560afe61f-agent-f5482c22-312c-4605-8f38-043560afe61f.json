@@ -1,0 +1,17 @@
+[
+  {
+    "content": "Run tests for livekit-router.test.ts",
+    "status": "completed",
+    "id": "1"
+  },
+  {
+    "content": "Run linter and fix any issues",
+    "status": "completed",
+    "id": "2"
+  },
+  {
+    "content": "Run type checking",
+    "status": "completed",
+    "id": "3"
+  }
+]

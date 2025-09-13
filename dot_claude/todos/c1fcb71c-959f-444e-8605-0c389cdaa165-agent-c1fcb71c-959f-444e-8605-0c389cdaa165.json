@@ -1,0 +1,12 @@
+[
+  {
+    "content": "Investigate mypy configuration in pre-commit hooks",
+    "status": "completed",
+    "id": "1"
+  },
+  {
+    "content": "Fix mypy configuration to exclude problematic dependencies",
+    "status": "in_progress",
+    "id": "2"
+  }
+]

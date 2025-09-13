@@ -1,0 +1,22 @@
+[
+  {
+    "content": "Resolve conflict in availability-router.ts",
+    "status": "completed",
+    "id": "1"
+  },
+  {
+    "content": "Resolve conflict in scheduling-router.ts",
+    "status": "completed",
+    "id": "2"
+  },
+  {
+    "content": "Stage resolved files",
+    "status": "completed",
+    "id": "3"
+  },
+  {
+    "content": "Complete merge",
+    "status": "completed",
+    "id": "4"
+  }
+]

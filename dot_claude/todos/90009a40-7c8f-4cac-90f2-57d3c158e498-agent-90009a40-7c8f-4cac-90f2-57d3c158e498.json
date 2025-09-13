@@ -1,0 +1,22 @@
+[
+  {
+    "content": "Examine the updated callscript and datapoint schemas",
+    "status": "completed",
+    "id": "1"
+  },
+  {
+    "content": "Update the call script manager based on new schemas",
+    "status": "completed",
+    "id": "2"
+  },
+  {
+    "content": "Update example JSON files to match new schemas",
+    "status": "completed",
+    "id": "3"
+  },
+  {
+    "content": "Move camelCase conversion from call_script_orchestrator.py to CallScript schema",
+    "status": "completed",
+    "id": "4"
+  }
+]

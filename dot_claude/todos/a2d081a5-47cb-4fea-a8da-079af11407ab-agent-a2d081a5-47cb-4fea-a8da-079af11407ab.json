@@ -1,0 +1,37 @@
+[
+  {
+    "content": "Create enhanced conversation context module with egress integration",
+    "status": "completed",
+    "id": "1"
+  },
+  {
+    "content": "Create egress management service for LiveKit recording",
+    "status": "completed",
+    "id": "2"
+  },
+  {
+    "content": "Create conversation persistor for transcript storage",
+    "status": "completed",
+    "id": "3"
+  },
+  {
+    "content": "Update orchestrator to integrate enhanced conversation context",
+    "status": "completed",
+    "id": "4"
+  },
+  {
+    "content": "Update manager to support egress initialization",
+    "status": "completed",
+    "id": "5"
+  },
+  {
+    "content": "Add configuration support for egress and storage",
+    "status": "completed",
+    "id": "6"
+  },
+  {
+    "content": "Add tests for new functionality",
+    "status": "completed",
+    "id": "7"
+  }
+]
