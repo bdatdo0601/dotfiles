@@ -48,6 +48,7 @@ brew 'vercel-cli'
 brew 'livekit'
 brew 'livekit-cli'
 brew 'orbstack'
+brew 'zoxide'
 
 # Apps
 cask '1password'
