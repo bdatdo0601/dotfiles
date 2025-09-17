@@ -27,7 +27,7 @@
   {
     "context": "Editor && edit_prediction_conflict",
     "bindings": {
-      "alt alt": "editor::AcceptEditPrediction"
+      "ctrl+tab": "editor::AcceptEditPrediction"
     }
   }
 ]

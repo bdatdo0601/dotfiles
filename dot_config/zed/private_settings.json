@@ -89,10 +89,13 @@
 		"TypeScript": {
 			"formatter": { "language_server": { "name": "biome" } },
 			"inlay_hints": {
+			"toggle_on_modifiers_press": {
+          "control": true
+        },
 				"enabled": true,
-				"show_parameter_hints": false,
+				"show_parameter_hints": true,
 				"show_other_hints": true,
-				"show_type_hints": true
+				"show_type_hints": false
 			}
 		},
 		"Python": {
