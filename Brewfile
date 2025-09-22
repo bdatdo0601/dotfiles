@@ -78,12 +78,12 @@ cask 'nikitabobko/tap/aerospace'
 cask 'notion'
 cask 'notion-calendar'
 cask 'claude'
-cask 'warp'
 cask 'yt-music'
 cask 'obsidian'
 cask 'zed'
 cask 'claude-code'
 cask 'shortwave'
+cask 'iterm2'
 
 # Quicklook
 cask 'qlmarkdown'
