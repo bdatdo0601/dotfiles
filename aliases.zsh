@@ -46,6 +46,7 @@ alias resolve="git add . && git commit --no-edit"
 alias stash="git stash -u"
 alias unstage="git restore --staged ."
 alias wip="commit wip"
+alias pr="gh pr create"
 
 # Chezmoi
 alias cmedit="chezmoi edit --apply"
@@ -55,3 +56,7 @@ alias cmpull="chezmoi update"
 alias cmapply="chezmoi apply"
 alias cmsync="chezmoi merge"
 alias cmsyncall="chezmoi merge-all"
+
+# Misc
+alias vibekb="env -u ANTHROPIC_API_KEY npx vibe-kanban"
+
