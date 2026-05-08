@@ -7,6 +7,7 @@ export OPENROUTER_API_KEY="{{ onepasswordRead "op://local/OpenRouterAPI/credenti
 {{ end -}}
 {{- if eq .email "dat@purplefish.com" }}
 export ANTHROPIC_API_KEY="{{ onepasswordRead "op://local/PPFAnthropicAPI/credential" }}"
+export DEEPSEEK_API_KEY="{{ onepasswordRead "op://local/DeepSeek/credential" }}"
 {{ end -}}
 # MCP ENV Specific
 ## AWS
