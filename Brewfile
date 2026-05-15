@@ -85,6 +85,7 @@ cask 'zed'
 cask 'claude-code'
 cask 'shortwave'
 cask 'iterm2'
+cask 'kitlangton-hex'
 
 # Quicklook
 cask 'qlmarkdown'
