@@ -31,6 +31,7 @@ brew 'svgo'
 brew 'gifsicle'
 brew 'gcc'
 brew 'vips'
+brew 'rtk'
 
 # Development
 brew 'imagemagick'
