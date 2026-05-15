@@ -9,6 +9,7 @@ alias compile="commit 'compile'"
 alias version="commit 'version'"
 alias vim='nvim'
 alias npm='pnpm'
+alias muxpi="$HOME/.pi/agent/bin/muxpi"
 alias cd='z'
 
 # Directories

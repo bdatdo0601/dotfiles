@@ -1,0 +1,137 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+REAL_PI="${PI_REAL_BIN:-/opt/homebrew/bin/pi}"
+SESSION_NAME="${MUXPI_SESSION:-${PI_AUTO_TMUX_SESSION:-pi-main}}"
+WINDOW_NAME="${MUXPI_WINDOW:-pi}"
+DEFAULT_AGENT_DIR="$HOME/.pi/agent"
+
+if [[ ! -x "$REAL_PI" ]]; then
+  echo "muxpi: real pi binary not found at $REAL_PI" >&2
+  exit 127
+fi
+
+quote() {
+  printf '%q' "$1"
+}
+
+append_export() {
+  local name="$1"
+  local value="$2"
+  env_setup+=" export $name=$(quote "$value");"
+}
+
+append_env_or_unset() {
+  local name="$1"
+  local value
+  if value="$(printenv "$name" 2>/dev/null)"; then
+    append_export "$name" "$value"
+  else
+    env_setup+=" unset $name;"
+  fi
+}
+
+# Keep non-interactive/admin invocations script-friendly even when called as muxpi.
+should_wrap=true
+if [[ -n "${TMUX:-}" || ! -t 0 || ! -t 1 ]]; then
+  should_wrap=false
+fi
+case "${1:-}" in
+  install|remove|uninstall|update|list|--help|-h|--version|-v)
+    should_wrap=false
+    ;;
+esac
+prev=""
+for arg in "$@"; do
+  case "$arg" in
+    --print|-p|--export|--list-models|--help|-h|--version|-v|--mode=json|--mode=rpc)
+      should_wrap=false
+      ;;
+  esac
+  if [[ "$prev" == "--mode" && ( "$arg" == "json" || "$arg" == "rpc" ) ]]; then
+    should_wrap=false
+  fi
+  prev="$arg"
+done
+
+if [[ "$should_wrap" != true ]]; then
+  exec "$REAL_PI" "$@"
+fi
+
+quoted_args=""
+for arg in "$@"; do
+  quoted_args+=" $(quote "$arg")"
+done
+
+# tmux panes inherit the tmux server environment, which can be stale. Re-seed
+# the pane from this shell so pi loads the expected settings, packages,
+# extensions, skills, PATH, and API credentials.
+env_setup="export MUXPI_WRAPPED=1;"
+append_export PATH "$PATH"
+append_export HOME "$HOME"
+append_export USER "${USER:-}"
+append_export LOGNAME "${LOGNAME:-${USER:-}}"
+append_export SHELL "${SHELL:-/bin/zsh}"
+append_export PI_CODING_AGENT_DIR "${PI_CODING_AGENT_DIR:-$DEFAULT_AGENT_DIR}"
+
+for var in \
+  PI_CODING_AGENT_SESSION_DIR \
+  PI_PACKAGE_DIR \
+  PI_OFFLINE \
+  PI_TELEMETRY \
+  NODE_PATH \
+  NVM_DIR \
+  PNPM_HOME \
+  BUN_INSTALL \
+  LANG \
+  LC_ALL \
+  EDITOR \
+  VISUAL \
+  TERM_PROGRAM \
+  COLORTERM \
+  ANTHROPIC_API_KEY \
+  ANTHROPIC_OAUTH_TOKEN \
+  OPENAI_API_KEY \
+  AZURE_OPENAI_API_KEY \
+  AZURE_OPENAI_BASE_URL \
+  AZURE_OPENAI_RESOURCE_NAME \
+  AZURE_OPENAI_API_VERSION \
+  AZURE_OPENAI_DEPLOYMENT_NAME_MAP \
+  DEEPSEEK_API_KEY \
+  GEMINI_API_KEY \
+  GROQ_API_KEY \
+  CEREBRAS_API_KEY \
+  XAI_API_KEY \
+  FIREWORKS_API_KEY \
+  OPENROUTER_API_KEY \
+  AI_GATEWAY_API_KEY \
+  ZAI_API_KEY \
+  MISTRAL_API_KEY \
+  MINIMAX_API_KEY \
+  MOONSHOT_API_KEY \
+  OPENCODE_API_KEY \
+  KIMI_API_KEY \
+  CLOUDFLARE_API_KEY \
+  CLOUDFLARE_ACCOUNT_ID \
+  CLOUDFLARE_GATEWAY_ID \
+  XIAOMI_API_KEY \
+  XIAOMI_TOKEN_PLAN_CN_API_KEY \
+  XIAOMI_TOKEN_PLAN_AMS_API_KEY \
+  XIAOMI_TOKEN_PLAN_SGP_API_KEY \
+  AWS_PROFILE \
+  AWS_ACCESS_KEY_ID \
+  AWS_SECRET_ACCESS_KEY \
+  AWS_BEARER_TOKEN_BEDROCK \
+  AWS_REGION; do
+  append_env_or_unset "$var"
+done
+
+cmd="$env_setup cd $(quote "$PWD"); exec $(quote "$REAL_PI")$quoted_args"
+
+if tmux has-session -t "$SESSION_NAME" 2>/dev/null; then
+  target="$(tmux new-window -P -F '#{session_name}:#{window_id}' -t "$SESSION_NAME:" -n "$WINDOW_NAME" -c "$PWD" "$cmd")"
+  tmux select-window -t "$target" >/dev/null 2>&1 || true
+  exec tmux attach-session -t "$SESSION_NAME"
+fi
+
+exec tmux new-session -s "$SESSION_NAME" -n "$WINDOW_NAME" -c "$PWD" "$cmd"

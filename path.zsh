@@ -8,6 +8,9 @@ add_to_path() {
 # Load dotfiles binaries
 add_to_path "$DOTFILES/bin"
 
+# Load pi helper binaries
+add_to_path "$HOME/.pi/agent/bin"
+
 # Load global Composer tools
 add_to_path "$HOME/.composer/vendor/bin"
 

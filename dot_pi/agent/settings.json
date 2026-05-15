@@ -1,0 +1,24 @@
+{
+  "lastChangelogVersion": "0.74.0",
+  "defaultProvider": "openai-codex",
+  "defaultModel": "gpt-5.5",
+  "defaultThinkingLevel": "xhigh",
+  "observational-memory": {
+    "compactionModel": {
+      "provider": "deepseek",
+      "id": "deepseek-v4-flash"
+    }
+  },
+  "packages": [
+    "npm:pi-observational-memory",
+    "npm:pi-rtk-optimizer",
+    "npm:@juicesharp/rpiv-ask-user-question",
+    "npm:@juicesharp/rpiv-todo",
+    "npm:pi-lens",
+    "npm:pi-mono-clear",
+    "npm:pi-codex-limit",
+    "npm:@juicesharp/rpiv-btw",
+    "npm:pi-fff"
+  ],
+  "hideThinkingBlock": true
+}
