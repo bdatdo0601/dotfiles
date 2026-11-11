@@ -1,0 +1,61 @@
+#!/bin/bash
+# Clone personal/work repositories into ~/workspace (skips any that already exist).
+SETUP_NAME="projects"
+STEP_TOTAL=2
+{{ template "setup-lib.sh" . }}
+
+WORKSPACE="$HOME/workspace"
+REPOS=(
+{{- if eq .email "dat.b.do@gmail.com" }}
+  "git@github.com:bdatdo0601/big-boi.git big-boi"
+{{- end }}
+{{- if eq .email "dat.do@robinai.com" }}
+  "git@github.com:ai-robin/dat.do.notes.git notes"
+  "git@github.com:ai-robin/deployment.git deployment"
+{{- end }}
+)
+
+step_github_ssh() {
+  if [ "${#REPOS[@]}" -eq 0 ]; then
+    STEP_NOTE="no repositories configured for {{ .email }}"
+    return 2
+  fi
+  local out
+  out=$(ssh -T -o BatchMode=yes -o ConnectTimeout=10 -o StrictHostKeyChecking=accept-new git@github.com 2>&1)
+  if printf '%s' "$out" | grep -q "successfully authenticated"; then
+    STEP_NOTE="$(printf '%s' "$out" | grep -o 'Hi [^!]*')"
+    return 0
+  fi
+  log_err "${out:-no response from github.com}"
+  log_info "Set up a GitHub SSH key (README step 1–2 / ssh.sh), then re-run \`chezmoi apply\`."
+  STEP_NOTE="GitHub SSH authentication failed"
+  return 1
+}
+
+step_clone() {
+  local entry url dir cloned=0 present=0 failed=0
+  mkdir -p "$WORKSPACE"
+  for entry in "${REPOS[@]}"; do
+    url=${entry% *}; dir="$WORKSPACE/${entry##* }"
+    if [ -d "$dir/.git" ]; then
+      log_ok "$(basename "$dir") already cloned"
+      present=$((present + 1))
+    elif git clone "$url" "$dir"; then
+      log_ok "Cloned $url → $dir"
+      cloned=$((cloned + 1))
+    else
+      log_err "Could not clone $url"
+      failed=$((failed + 1))
+    fi
+  done
+  STEP_NOTE="$cloned cloned, $present present, $failed failed"
+  [ "$failed" -gt 0 ] && return 1
+  [ "$cloned" -eq 0 ] && return 2
+  return 0
+}
+
+header "Project repositories"
+run_step "GitHub SSH access" step_github_ssh
+if [ "$FAILURES" -gt 0 ] || [ "${#REPOS[@]}" -eq 0 ]; then finish; fi
+run_step "Clone into ~/workspace" step_clone
+finish

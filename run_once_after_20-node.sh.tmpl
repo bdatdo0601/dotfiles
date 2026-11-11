@@ -1,0 +1,80 @@
+{{- if eq .chezmoi.os "darwin" -}}
+#!/bin/bash
+# Node toolchain: nvm, the current LTS Node, and global pnpm CLIs.
+SETUP_NAME="node"
+STEP_TOTAL=3
+{{ template "setup-lib.sh" . }}
+set +u   # nvm.sh is not nounset-safe
+
+NVM_VERSION="v0.41.0"
+export NVM_DIR="$HOME/.config/nvm"   # matches .zshrc
+export PNPM_HOME="$HOME/.local/share/pnpm"
+export PATH="$PNPM_HOME/bin:$PNPM_HOME:$PATH"
+load_brew_env || true
+
+PNPM_GLOBALS=(
+  @aws-amplify/cli
+  @biomejs/biome
+  aws-cdk
+  aws-cdk-local
+)
+
+load_nvm() { [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"; }
+
+step_nvm() {
+  if load_nvm; then
+    STEP_NOTE="nvm $(nvm --version) in $NVM_DIR"
+    return 2
+  fi
+  mkdir -p "$NVM_DIR"
+  # PROFILE=/dev/null stops the installer from appending to shell profiles; .zshrc already loads nvm.
+  curl -fsSL "https://raw.githubusercontent.com/nvm-sh/nvm/$NVM_VERSION/install.sh" | PROFILE=/dev/null bash || return 1
+  load_nvm || { STEP_NOTE="nvm.sh missing after install"; return 1; }
+  STEP_NOTE="nvm $(nvm --version)"
+}
+
+step_node() {
+  load_nvm || { STEP_NOTE="nvm not available"; return 1; }
+  local current
+  # Leave an existing Node alone (nvm default, Homebrew, or proto); setup should
+  # not change the version you work with.
+  current=$(nvm version default 2>/dev/null)
+  if [ -n "$current" ] && [ "$current" != "N/A" ]; then
+    STEP_NOTE="nvm default node $current (upgrade with \`nvm install --lts\`)"
+    return 2
+  fi
+  if command -v node >/dev/null 2>&1; then
+    STEP_NOTE="node $(node --version) from $(command -v node); nvm LTS not needed"
+    return 2
+  fi
+  log_info "Installing Node $(nvm version-remote --lts 2>/dev/null || echo LTS)..."
+  nvm install --lts --latest-npm || return 1
+  nvm alias default 'lts/*' >/dev/null
+  STEP_NOTE="node $(node --version) set as default"
+}
+
+step_pnpm_globals() {
+  load_nvm && nvm use --silent default >/dev/null
+  command -v pnpm >/dev/null 2>&1 || { STEP_NOTE="pnpm not found (installed by the Brewfile)"; return 1; }
+  local installed missing=() pkg
+  installed=$(pnpm ls -g --depth 0 --json 2>/dev/null \
+    | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{try{for(const p of JSON.parse(s))for(const n of Object.keys(p.dependencies||{}))console.log(n)}catch{}})')
+  for pkg in "${PNPM_GLOBALS[@]}"; do
+    printf '%s\n' "$installed" | grep -qxF "$pkg" || missing+=("$pkg")
+  done
+  if [ "${#missing[@]}" -eq 0 ]; then
+    STEP_NOTE="${#PNPM_GLOBALS[@]} global packages present"
+    return 2
+  fi
+  log_info "Installing: ${missing[*]}"
+  mkdir -p "$PNPM_HOME"
+  pnpm add -g "${missing[@]}" || { STEP_NOTE="pnpm add -g failed for: ${missing[*]}"; return 1; }
+  STEP_NOTE="installed ${#missing[@]} of ${#PNPM_GLOBALS[@]}"
+}
+
+header "Node toolchain"
+run_step "nvm $NVM_VERSION" step_nvm
+run_step "Node.js LTS" step_node
+run_step "Global pnpm packages" step_pnpm_globals
+finish
+{{ end -}}

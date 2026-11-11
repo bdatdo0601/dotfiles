@@ -1,0 +1,36 @@
+{{- if eq .chezmoi.os "darwin" -}}
+#!/bin/bash
+# Apply macOS system defaults from ~/.macos. Runs last: it restarts Finder, Dock,
+# Chrome, Terminal and others, which would cut off anything that ran after it.
+#
+# Environment flags:
+#   MACOS_DEFAULTS=yes|no   skip the confirmation prompt
+SETUP_NAME="macos-defaults"
+STEP_TOTAL=1
+{{ template "setup-lib.sh" . }}
+
+# Hash of the rendered defaults so this script re-runs whenever ~/.macos changes:
+# {{ include "dot_macos.tmpl" | sha256sum }}
+
+step_macos_defaults() {
+  local answer=${MACOS_DEFAULTS:-}
+  [ -f "$HOME/.macos" ] || { STEP_NOTE="$HOME/.macos not found"; return 1; }
+  log_info "Sets computer name to \"{{ .machineName }}\", Finder/Dock/keyboard/trackpad preferences, and more."
+  log_warn "Restarts Finder, Dock, SystemUIServer, Chrome, Mail, Photos, Safari and Terminal when done."
+  [ "${TERM_PROGRAM:-}" = "Apple_Terminal" ] && \
+    log_warn "You are in Terminal.app, which will be closed. Output is preserved in $LOG_FILE."
+  if [ -z "$answer" ]; then
+    confirm "Apply macOS defaults now?" y && answer=yes || answer=no
+  fi
+  if [ "$answer" != yes ]; then
+    STEP_NOTE="skipped; run \`bash ~/.macos\` later to apply"
+    return 3
+  fi
+  bash "$HOME/.macos" || return 1
+  STEP_NOTE="some changes need a logout or restart"
+}
+
+header "macOS defaults"
+run_step "System preferences (~/.macos)" step_macos_defaults
+finish
+{{ end -}}

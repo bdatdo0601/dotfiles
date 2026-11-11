@@ -1,0 +1,126 @@
+{{- if eq .chezmoi.os "darwin" -}}
+#!/bin/bash
+# Machine bootstrap: Homebrew packages and core toolchains.
+# Runs once (after dotfiles are written); every step is idempotent, so re-running is cheap.
+#
+# Environment flags:
+#   INSTALL_MAS=1      also install Mac App Store apps (requires App Store sign-in)
+#   BREW_UPGRADE=1     upgrade already-installed Brewfile packages instead of leaving them
+SETUP_NAME="bootstrap"
+STEP_TOTAL=7
+{{ template "setup-lib.sh" . }}
+
+BREWFILE="$SOURCE_DIR/Brewfile"
+
+step_preflight() {
+  if ! curl -fsSI --max-time 10 https://github.com >/dev/null; then
+    STEP_NOTE="no network access to github.com"
+    return 1
+  fi
+  log_ok "Network reachable"
+  keep_sudo_alive || { STEP_NOTE="sudo authentication failed"; return 1; }
+  log_ok "Administrator access cached"
+}
+
+step_homebrew() {
+  if ! load_brew_env; then
+    # The chezmoi pre-hook installs Homebrew; reaching this means it did not succeed.
+    STEP_NOTE="Homebrew is not installed (expected .pre_setup.sh to install it)"
+    return 1
+  fi
+  log_info "$(brew --version | head -1) at $(brew --prefix)"
+  log_info "Updating Homebrew formula index..."
+  brew update --quiet || { STEP_NOTE="brew update failed"; return 3; }
+}
+
+step_filevault() {
+  local status
+  status=$(fdesetup status 2>/dev/null)
+  if printf '%s' "$status" | grep -q "FileVault is On"; then
+    STEP_NOTE="FileVault is on"
+    return 2
+  fi
+  log_info "Current state: ${status:-unknown}"
+  log_warn "Enabling FileVault prints a RECOVERY KEY — save it to 1Password before continuing."
+  if sudo fdesetup enable; then
+    STEP_NOTE="enabled; takes effect after restart"
+  else
+    STEP_NOTE="could not enable FileVault; turn it on in System Settings → Privacy & Security"
+    return 3
+  fi
+}
+
+step_brew_bundle() {
+  local missing missing_list mas_ids args=(--file "$BREWFILE" --verbose)
+  [ "${BREW_UPGRADE:-0}" = 1 ] || args+=(--no-upgrade)
+
+  if [ "${INSTALL_MAS:-0}" != 1 ]; then
+    mas_ids=$(sed -nE 's/^mas .*id: *([0-9]+).*/\1/p' "$BREWFILE" | tr '\n' ' ')
+    export HOMEBREW_BUNDLE_MAS_SKIP="$mas_ids"
+    [ -n "$mas_ids" ] && log_info "Skipping Mac App Store apps ($mas_ids); sign in to the App Store and re-run with INSTALL_MAS=1 to include them."
+  fi
+
+  # `brew bundle check` reports missing entries on stderr as "→ <Type> <name> needs to be installed."
+  missing_list=$(brew bundle check --file "$BREWFILE" --verbose --no-upgrade 2>&1 | grep '^→' || true)
+  missing=$(printf '%s' "$missing_list" | grep -c '^→' || true)
+  if [ "$missing" = 0 ]; then
+    STEP_NOTE="all $(brew bundle list --file "$BREWFILE" --all 2>/dev/null | wc -l | tr -d ' ') Brewfile entries installed"
+    return 2
+  fi
+  log_info "$missing Brewfile entr$( [ "$missing" = 1 ] && echo y || echo ies) to install:"
+  printf '%s\n' "$missing_list" | sed -E 's/^→ /      /; s/ needs to be installed\.//'
+  log_info "Casks with .pkg installers (zoom, microsoft-teams) can take several minutes and may open a system dialog."
+
+  if brew bundle install "${args[@]}"; then
+    STEP_NOTE="$missing entries installed"
+  else
+    STEP_NOTE="some entries failed; run \`brew bundle check --file $BREWFILE --verbose\` to list them"
+    return 3
+  fi
+}
+
+step_rust() {
+  if [ -x "$HOME/.cargo/bin/rustup" ] || command -v rustup >/dev/null 2>&1; then
+    STEP_NOTE="$("$HOME/.cargo/bin/rustc" --version 2>/dev/null || echo rustup present)"
+    return 2
+  fi
+  # -y keeps the installer from waiting on its interactive menu; shell profiles already source ~/.cargo/env.
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path || return 1
+  STEP_NOTE="$("$HOME/.cargo/bin/rustc" --version)"
+}
+
+step_uv() {
+  if command -v uv >/dev/null 2>&1 || [ -x "$HOME/.local/bin/uv" ]; then
+    STEP_NOTE="$("$HOME/.local/bin/uv" --version 2>/dev/null || uv --version)"
+    return 2
+  fi
+  # path.zsh already puts ~/.local/bin on PATH, so the installer must not edit shell profiles.
+  curl -LsSf https://astral.sh/uv/install.sh | env UV_NO_MODIFY_PATH=1 sh || return 1
+  STEP_NOTE="$("$HOME/.local/bin/uv" --version)"
+}
+
+step_dev_dirs() {
+  local changed=0
+  if [ ! -d "$HOME/workspace" ]; then
+    mkdir -p "$HOME/workspace" && log_ok "Created ~/workspace" && changed=1
+  fi
+  if [ ! -d "$HOME/.tmux/plugins/tpm" ] || [ -z "$(ls -A "$HOME/.tmux/plugins/tpm" 2>/dev/null)" ]; then
+    git clone --depth 1 https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm" || return 1
+    log_ok "Installed tmux plugin manager (press prefix + I inside tmux to install plugins)"
+    changed=1
+  fi
+  [ "$changed" = 1 ] || { STEP_NOTE="workspace dir and tmux TPM present"; return 2; }
+}
+
+header "Dotfiles bootstrap"
+run_step "Preflight (network, sudo)" step_preflight
+if [ "$FAILURES" -gt 0 ]; then finish; fi
+run_step "Homebrew" step_homebrew
+if [ "$FAILURES" -gt 0 ]; then finish; fi
+run_step "FileVault disk encryption" step_filevault
+run_step "Brewfile packages" step_brew_bundle
+run_step "Rust toolchain (rustup)" step_rust
+run_step "Python uv" step_uv
+run_step "Workspace dir and tmux plugins" step_dev_dirs
+finish
+{{ end -}}
