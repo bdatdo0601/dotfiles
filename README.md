@@ -151,6 +151,55 @@ Ctrl + n --> File Tree
 <leader> + hjkl --> move focus
 ```
 
+## Claude sessions over SSH and in Zed
+
+`claude-session` is installed in `~/.customscripts` (already on PATH). It needs
+tmux and Claude Code, both included in the Brewfile. Sign in to Claude Code with
+a Remote Control eligible Claude subscription on the host machine.
+
+```sh
+claude-session start iron ~/workspace/iron-fillet
+claude-session list
+claude-session attach iron
+```
+
+Start creates a detached tmux session in the given directory, running
+`claude --dangerously-skip-permissions --remote-control NAME`. Names contain
+letters, digits, underscores and hyphens and start with a letter or digit.
+Duplicate names are rejected; attach to the existing session or choose another
+name. This command grants Claude permission to run tools without approval.
+
+In Zed, open the Agent Panel's new-thread menu, choose **Terminal**, and run
+`claude-session attach iron`. Rename the Terminal Thread to match. The terminal
+and the Claude phone app control the same running Claude session. Attach once
+after starting to complete any first-run prompts and obtain the phone link.
+Use the same OS user over SSH and locally. From another machine:
+
+```sh
+ssh my-mac '~/.customscripts/claude-session start iron /absolute/project/path'
+ssh -t my-mac '~/.customscripts/claude-session attach iron'
+```
+
+Detach with **Ctrl-b, then d**; `/exit` inside Claude ends the session. Keep the
+host awake. SSH disconnects are safe, but rebooting ends the running sessions.
+The helper creates `claude-NAME` sessions on your normal tmux server and uses
+your existing tmux configuration. Calling attach from within tmux switches the
+current client instead of nesting another tmux.
+
+Apply just the helper, without running chezmoi bootstrap scripts:
+
+```sh
+chezmoi apply --exclude scripts ~/.customscripts/claude-session
+```
+
+Validate from the chezmoi source root (tests use an isolated tmux server and
+a fake Claude executable, with no model calls):
+
+```sh
+shellcheck dot_customscripts/executable_claude-session
+python3 helpers/test_claude_session.py
+```
+
 ## Backups Encrypted Files
 
 run `cmencryptbackup.sh` (located in helpers)

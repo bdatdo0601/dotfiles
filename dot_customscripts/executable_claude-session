@@ -1,0 +1,85 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+  cat <<'EOF'
+Usage:
+  claude-session start NAME DIRECTORY  Start a detached Claude session
+  claude-session attach NAME           Attach from Zed or an SSH terminal
+  claude-session list                  List running Claude tmux sessions
+
+NAME must start with a letter or digit and contain only letters, digits,
+underscores or hyphens. Each name identifies one session on this machine.
+Sessions use --dangerously-skip-permissions and --remote-control NAME.
+
+In Zed, create a Terminal Thread and run: claude-session attach NAME
+Detach with Ctrl-b, then d. Use /exit inside Claude to end the session.
+Keep the host awake; tmux preserves sessions across disconnects, not reboots.
+EOF
+}
+
+fail() { printf 'claude-session: %s\n' "$*" >&2; exit 1; }
+
+action=${1:-list}
+case "$action" in
+  help|-h|--help) usage; exit 0 ;;
+  start) [[ $# == 3 ]] || { usage >&2; exit 2; } ;;
+  attach) [[ $# == 2 ]] || { usage >&2; exit 2; } ;;
+  list) [[ $# -le 1 ]] || { usage >&2; exit 2; } ;;
+  *) usage >&2; exit 2 ;;
+esac
+
+# SSH commands may not load the interactive shell's PATH configuration.
+for bin_dir in "$HOME/.local/bin" /opt/homebrew/bin /usr/local/bin /home/linuxbrew/.linuxbrew/bin; do
+  if [[ -d "$bin_dir" && ":$PATH:" != *":$bin_dir:"* ]]; then
+    PATH="$PATH:$bin_dir"
+  fi
+done
+export PATH
+
+command -v tmux >/dev/null || fail 'tmux is required (macOS: brew install tmux).'
+
+if [[ "$action" == list ]]; then
+  # No server is the normal empty-list case. Only show this helper's sessions.
+  sessions=$(tmux list-sessions -F '#{session_name}' 2>/dev/null) || sessions=''
+  found=false
+  while IFS= read -r session; do
+    if [[ "$session" == claude-* ]]; then
+      printf '%s\n' "${session#claude-}"
+      found=true
+    fi
+  done <<< "$sessions"
+  "$found" || printf 'No Claude sessions. Start one: claude-session start NAME DIRECTORY\n'
+  exit 0
+fi
+
+name=$2
+[[ "$name" =~ ^[a-zA-Z0-9][a-zA-Z0-9_-]*$ ]] || fail 'Invalid name; use letters, digits, underscores and hyphens, starting with a letter or digit.'
+session="claude-$name"
+target="=$session"
+
+if [[ "$action" == attach ]]; then
+  tmux has-session -t "$target" 2>/dev/null || fail "No session named '$name'. Run claude-session list."
+  if [[ -n "${TMUX:-}" ]]; then
+    exec tmux switch-client -t "$target"
+  fi
+  exec tmux attach-session -t "$target"
+fi
+
+[[ -d "$3" ]] || fail "Directory does not exist: $3"
+directory=$(cd -- "$3" && pwd -P)
+claude_bin=$(command -v claude) || fail 'claude is required. Install Claude Code and sign in first.'
+# Resolve the executable before changing the child's working directory.
+if [[ "$claude_bin" != /* ]]; then
+  claude_bin="$(pwd -P)/$claude_bin"
+fi
+if tmux has-session -t "$target" 2>/dev/null; then
+  fail "Session '$name' already exists. Attach with: claude-session attach $name"
+fi
+# Multiple command arguments make tmux exec directly, without shell parsing.
+# Forward PATH because an existing tmux server may have an older environment.
+tmux new-session -d -s "$session" -c "$directory" -e "PATH=$PATH" \
+  "$claude_bin" --dangerously-skip-permissions --remote-control "$name"
+printf 'Started tmux session %s in %s\n' "$name" "$directory"
+printf 'Attach: claude-session attach %s\n' "$name"
+printf 'Attach once to complete any Claude login, trust or Remote Control prompts.\n'
