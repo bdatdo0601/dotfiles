@@ -2,13 +2,29 @@
 #!/bin/sh
 echo "Setting up your Mac..."
 
+# Ask for sudo once up front and keep it alive for the whole run. brew bundle
+# hides installer output, so a sudo re-prompt from a .pkg cask (zoom, teams)
+# would otherwise look like a silent hang.
+sudo -v
+while true; do sudo -n true; sleep 50; kill -0 "$$" 2>/dev/null || exit; done 2>/dev/null &
+
 echo "Enable File Vault"
 sudo fdesetup enable || true
 
 # Update Homebrew recipes
 brew update
+
+# Mac App Store installs hang indefinitely when not signed in to the App Store,
+# so mas entries are opt-in: rerun with INSTALL_MAS=1 after signing in.
+BREWFILE="{{ .chezmoi.sourceDir }}/Brewfile"
+if [ "${INSTALL_MAS:-0}" != "1" ]; then
+  HOMEBREW_BUNDLE_MAS_SKIP="$(sed -nE 's/^mas .*id: *([0-9]+).*/\1/p' "$BREWFILE" | tr '\n' ' ')"
+  export HOMEBREW_BUNDLE_MAS_SKIP
+  echo "Skipping Mac App Store apps (set INSTALL_MAS=1 to include): $HOMEBREW_BUNDLE_MAS_SKIP"
+fi
+
 # Install all our dependencies with bundle (See Brewfile)
-brew bundle --file ./Brewfile
+brew bundle --verbose --file "$BREWFILE"
 
 # Install Rust
 if test ! $(which rustup); then
