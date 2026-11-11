@@ -10,9 +10,7 @@
           "name": "DeepSeek V4 Pro",
           "contextWindow": 1000000,
           "maxTokens": 384000,
-          "input": [
-            "text"
-          ],
+          "input": ["text"],
           "reasoning": true,
           "cost": {
             "input": 1.74,
@@ -37,9 +35,7 @@
           "name": "DeepSeek V4 Flash",
           "contextWindow": 1000000,
           "maxTokens": 384000,
-          "input": [
-            "text"
-          ],
+          "input": ["text"],
           "reasoning": true,
           "cost": {
             "input": 0.14,
@@ -60,6 +56,33 @@
           }
         }
       ]
+    },
+    "google": {
+      "apiKey": "$GOOGLE_API_KEY",
+      "models": [
+        {
+          "id": "gemini-3.5-flash",
+          "name": "Gemini 3.5 Flash",
+          "reasoning": true,
+          "input": [
+            "text",
+            "image"
+          ],
+          "thinkingLevelMap": {
+            "off": null
+          },
+          "contextWindow": 1048576,
+          "maxTokens": 65536,
+          "cost": {
+            "input": 1.5,
+            "output": 9,
+            "cacheRead": 0.15,
+            "cacheWrite": 0
+          }
+        }
+      ],
+      "api": "google-generative-ai",
+      "baseUrl": "https://generativelanguage.googleapis.com/v1beta"
     }
   }
 }

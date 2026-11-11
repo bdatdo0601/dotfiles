@@ -1,3 +1,7 @@
+# Stale compiled zsh files. Keep these globs anchored to known locations:
+# a bare `**/*.zwc` makes chezmoi walk all of $HOME (multi-GB agent dirs) on every command.
 *.zwc
-**/*.zwc
+.cache/*.zwc
+.bun/*.zwc
+.oh-my-zsh/**/*.zwc
 .pi/agent/bin/pi

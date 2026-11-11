@@ -7,104 +7,129 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
-  "features": {
-    "edit_prediction_provider": "zed"
-  },
-  "assistant": {
-    "default_model": {
-      "provider": "anthropic",
-      "model": "claude-3-5-haiku-latest"
-    },
-    "version": "2"
-  },
-  "base_keymap": "VSCode",
-  "buffer_font_family": "JetBrainsMono Nerd Font",
-  "ui_font_size": 14,
-  "buffer_font_size": 12,
-  "edit_predictions": {
-    "mode": "eager"
-  },
-  "theme": {
-    "mode": "system",
-    "light": "One Light",
-    "dark": "Catppuccin Mocha"
-  },
-  "file_types": {
-    "Dockerfile": ["Dockerfile", "Dockerfile.*"],
-    "JSON": ["json", "jsonc", "*.code-snippets"]
-  },
-  "lsp": {
-    "biome": {
-      "settings": {
-        "require_config_file": true
-      }
-    },
-    "pyright": {
-      "settings": {
-        "python.analysis": {
-          "diagnosticMode": "workspace",
-          "typeCheckingMode": "off"
-        }
-      }
-    },
-    "ruff": {
-      "initialization_options": {
-        "settings": {
-          // Ruff server settings goes here
-          "lineLength": 120,
-          "lint": {
-            "extendSelect": ["I"]
-          }
-        }
-      }
-    }
-  },
-  "code_actions_on_format": {
-    "source.fixAll.biome": true,
-    "source.organizeImports.biome": true
-  },
-  "languages": {
-    "Markdown": {
-      "soft_wrap": "editor_width"
-    },
-    "TypeScript": {
-      "inlay_hints": {
-        "enabled": true,
-        "show_parameter_hints": false,
-        "show_other_hints": true,
-        "show_type_hints": true
-      }
-    },
-    "terminal": {
-      "font_family": "JetBrainsMono Nerd Font",
-      "line_height": "standard",
-      "env": {
-        "EDITOR": "zed --wait"
-      },
-      "formatter": {
-        "language_server": {
-          "name": "biome"
-        }
-      }
-    },
-    "Python": {
-      "language_servers": ["ruff"],
-      "format_on_save": "on",
-      "formatter": [
-        {
-          "language_server": {
-            "name": "ruff"
-          }
-        },
-        {
-          "code_actions": {
-            // Fix all auto-fixable lint violations
-            "source.fixAll.ruff": true,
-            // Organize imports
-            "source.organizeImports.ruff": true
-          }
-        }
-      ]
-    }
-  }
+	"theme": "GitHub Dark Default",
+	"base_keymap": "VSCode",
+	"buffer_font_family": "JetBrainsMono Nerd Font",
+	"ui_font_size": 15.0,
+	"buffer_font_size": 18,
+	"edit_predictions": {
+		"provider": "zed",
+  "mode": "eager"
+	},
+	"file_types": {
+		"Dockerfile": ["Dockerfile", "Dockerfile.*"],
+		"JSON": ["json", "jsonc", "*.code-snippets"]
+	},
+	"agent": {
+		"default_profile": "ask",
+		"always_allow_tool_actions": true,
+		"inline_assistant_model": {
+			"provider": "anthropic",
+			"model": "claude-sonnet-4-5-latest"
+		},
+		"model_parameters": []
+	},
+	"agent_servers": {
+		"Goose 🪿": {
+			"type": "custom",
+			"command": "goose",
+			"args": ["acp"],
+			"env": {}
+		}
+	},
+	"lsp": {
+		"terraform-ls": {
+			"initialization_options": {
+				"validation": {
+					"enableEnhancedValidation": false
+				},
+				"experimentalFeatures": {
+					"prefillRequiredFields": true
+				}
+			}
+		},
+		"vtsls": {
+			"settings": {
+				"typescript": {
+					"updateImportsOnFileMove": {
+						"enabled": "always"
+					}
+				},
+				"javascript": {
+					"updateImportsOnFileMove": {
+						"enabled": "always"
+					}
+				}
+			},
+			"enable_lsp_tasks": true
+		},
+		"biome": {
+			"settings": {
+				"require_config_file": true
+			}
+		},
+		"pyright": {
+			"settings": {
+				"python.analysis": {
+					"diagnosticMode": "workspace",
+					"typeCheckingMode": "strict"
+				},
+				"python": {
+					"pythonPath": ".venv/bin/python"
+				}
+			}
+		},
+		"ruff": {
+			"initialization_options": {
+				"settings": {
+					// Ruff server settings goes here
+					"lineLength": 88,
+					"lint": {
+						"extendSelect": ["I"]
+					}
+				}
+			}
+		}
+	},
+	"code_actions_on_format": {
+		"source.fixAll.biome": true,
+		"source.organizeImports.biome": true
+	},
+	"languages": {
+		"Prisma": {
+			"tab_size": 4
+		},
+		"JavaScript": { "formatter": { "language_server": { "name": "biome" } } },
+		"TSX": { "formatter": { "language_server": { "name": "biome" } } },
+		"JSON": { "formatter": { "language_server": { "name": "biome" } } },
+		"JSONC": { "formatter": { "language_server": { "name": "biome" } } },
+		"CSS": { "formatter": { "language_server": { "name": "biome" } } },
+		"Markdown": {
+			"soft_wrap": "editor_width"
+		},
+		"TypeScript": {
+			"formatter": { "language_server": { "name": "biome" } },
+			"inlay_hints": {
+				"toggle_on_modifiers_press": {
+					"control": true
+				},
+				"enabled": true,
+				"show_parameter_hints": true,
+				"show_other_hints": true,
+				"show_type_hints": false
+			}
+		},
+		"Python": {
+			"language_servers": ["ty", "!basedpyright"],
+			"format_on_save": "on",
+			"formatter": [
+				{
+					"language_server": {
+						"name": "ruff"
+					}
+				},
+				{ "code_action": "source.fixAll.ruff" }
+			]
+		}
+	}
 }

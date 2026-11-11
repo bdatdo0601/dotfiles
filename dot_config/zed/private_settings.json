@@ -7,41 +7,81 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
-	"theme": "Ayu Dark",
-	"features": {
-		"edit_prediction_provider": "zed"
-	},
+	"cli_default_open_behavior": "new_window",
+ "project_panel": {
+  "dock": "left"
+ },
+ "outline_panel": {
+  "dock": "right"
+ },
+ "collaboration_panel": {
+  "dock": "right"
+ },
+ "git_panel": {
+  "dock": "right"
+ },
+ "theme": "GitHub Dark Default",
 	"base_keymap": "VSCode",
 	"buffer_font_family": "JetBrainsMono Nerd Font",
-	"ui_font_size": 20,
-	"buffer_font_size": 20,
+	"ui_font_size": 15.0,
+	"buffer_font_size": 18,
 	"edit_predictions": {
-		"mode": "eager"
+		"provider": "zed",
+  "mode": "eager"
 	},
 	"file_types": {
 		"Dockerfile": ["Dockerfile", "Dockerfile.*"],
 		"JSON": ["json", "jsonc", "*.code-snippets"]
 	},
 	"agent": {
+		"dock": "right",
+  "tool_permissions": {
+   "default": "allow"
+  },
+  "default_profile": "ask",
 		"inline_assistant_model": {
 			"provider": "anthropic",
-			"model": "claude-sonnet-4-latest"
+			"model": "claude-sonnet-4-5-latest"
 		},
-		"always_allow_tool_actions": true,
-		"preferred_completion_mode": "burn",
-		"default_model": {
-			"provider": "zed.dev",
-			"model": "claude-sonnet-4"
-		}
+		"model_parameters": []
 	},
 	"agent_servers": {
-		"Goose 🪿": {
+		"pi-acp": {
+   "type": "registry"
+  },
+  "Goose 🪿": {
+			"type": "custom",
 			"command": "goose",
 			"args": ["acp"],
 			"env": {}
 		}
 	},
 	"lsp": {
+		"terraform-ls": {
+			"initialization_options": {
+				"validation": {
+					"enableEnhancedValidation": false
+				},
+				"experimentalFeatures": {
+					"prefillRequiredFields": true
+				}
+			}
+		},
+		"vtsls": {
+			"settings": {
+				"typescript": {
+					"updateImportsOnFileMove": {
+						"enabled": "always"
+					}
+				},
+				"javascript": {
+					"updateImportsOnFileMove": {
+						"enabled": "always"
+					}
+				}
+			},
+			"enable_lsp_tasks": true
+		},
 		"biome": {
 			"settings": {
 				"require_config_file": true
@@ -62,7 +102,6 @@
 			"initialization_options": {
 				"settings": {
 					// Ruff server settings goes here
-					"lineLength": 88,
 					"lint": {
 						"extendSelect": ["I"]
 					}
@@ -80,8 +119,6 @@
 		},
 		"JavaScript": { "formatter": { "language_server": { "name": "biome" } } },
 		"TSX": { "formatter": { "language_server": { "name": "biome" } } },
-		"JSON": { "formatter": { "language_server": { "name": "biome" } } },
-		"JSONC": { "formatter": { "language_server": { "name": "biome" } } },
 		"CSS": { "formatter": { "language_server": { "name": "biome" } } },
 		"Markdown": {
 			"soft_wrap": "editor_width"
@@ -89,9 +126,9 @@
 		"TypeScript": {
 			"formatter": { "language_server": { "name": "biome" } },
 			"inlay_hints": {
-			"toggle_on_modifiers_press": {
-          "control": true
-        },
+				"toggle_on_modifiers_press": {
+					"control": true
+				},
 				"enabled": true,
 				"show_parameter_hints": true,
 				"show_other_hints": true,
@@ -99,7 +136,7 @@
 			}
 		},
 		"Python": {
-			"language_servers": ["ruff", "pyright", "ty"],
+			"language_servers": ["ty", "ruff", "!basedpyright"],
 			"format_on_save": "on",
 			"formatter": [
 				{
@@ -107,14 +144,7 @@
 						"name": "ruff"
 					}
 				},
-				{
-					"code_actions": {
-						// Fix all auto-fixable lint violations
-						"source.fixAll.ruff": true,
-						// Organize imports
-						"source.organizeImports.ruff": true
-					}
-				}
+				{ "code_action": "source.fixAll.ruff" }
 			]
 		}
 	}

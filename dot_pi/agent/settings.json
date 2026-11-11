@@ -1,8 +1,8 @@
 {
-  "lastChangelogVersion": "0.74.0",
-  "defaultProvider": "openai-codex",
-  "defaultModel": "gpt-5.5",
-  "defaultThinkingLevel": "xhigh",
+  "lastChangelogVersion": "0.80.9",
+  "defaultProvider": "google",
+  "defaultModel": "gemini-3.5-flash",
+  "defaultThinkingLevel": "high",
   "observational-memory": {
     "compactionModel": {
       "provider": "deepseek",
@@ -10,15 +10,22 @@
     }
   },
   "packages": [
-    "npm:pi-observational-memory",
+    "git:github.com/elpapi42/pi-observational-memory",
     "npm:pi-rtk-optimizer",
     "npm:@juicesharp/rpiv-ask-user-question",
     "npm:@juicesharp/rpiv-todo",
-    "npm:pi-lens",
     "npm:pi-mono-clear",
-    "npm:pi-codex-limit",
     "npm:@juicesharp/rpiv-btw",
-    "npm:pi-fff"
+    "npm:pi-web-access",
+    "npm:@plannotator/pi-extension",
+    "npm:@vanillagreen/pi-tool-renderer",
+    "npm:pi-markdown-preview",
+    "npm:pi-dynamic-workflows",
+    "npm:pi-subagents",
+    "npm:pi-prompt-template-model",
+    "npm:pi-intercom"
   ],
-  "hideThinkingBlock": true
+  "hideThinkingBlock": false,
+  "theme": "dark",
+  "followUpMode": "all"
 }

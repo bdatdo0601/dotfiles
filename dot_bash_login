@@ -2,3 +2,7 @@ export JAVA_TOOLS_OPTIONS="-Dlog4j2.formatMsgNoLookups=true"
 . "$HOME/.cargo/env"
 
 . "$HOME/.local/share/../bin/env"
+
+. "$HOME/.moon/bin/env"
+
+. "$HOME/.local/share/moon/bin/env"

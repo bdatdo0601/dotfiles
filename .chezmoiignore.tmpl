@@ -56,3 +56,9 @@ path.zsh.zwc
 **/.config/github-copilot/**
 **/.config/inngest
 **/.config/inngest/**
+
+{{- if ne .alias "bdatdo0601" }}
+# authorized_keys is only templated from GitHub keys for the personal alias;
+# elsewhere it is machine-local and must not be deleted by apply.
+.ssh/authorized_keys
+{{- end }}

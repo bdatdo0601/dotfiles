@@ -10,8 +10,10 @@ alias version="commit 'version'"
 alias vim='nvim'
 alias npm='pnpm'
 alias muxpi="$HOME/.pi/agent/bin/muxpi"
-alias cd='z'
-
+if [[ "$CLAUDECODE" != "1" ]]; then
+  alias cd='z'
+fi
+alias wails3="$HOME/go/bin/wails3"
 # Directories
 alias dotfiles="cd $DOTFILES"
 alias library="cd $HOME/Library"

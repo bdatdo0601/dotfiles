@@ -1,33 +1,34 @@
 export GITHUB_USERNAME='bdatdo0601'
 export EDITOR='nvim'
 export WORKSPACE="$HOME/workspace"
-export HF_TOKEN="{{ onepasswordRead "op://local/HFToken/credential" }}"
+export HF_TOKEN="{{ onepasswordRead "op://local/HFToken/credential" "my.1password.com" }}"
 {{- if eq .email "dat.b.do@gmail.com" }}
-export ANTHROPIC_API_KEY="{{ onepasswordRead "op://local/ClaudeAPI/credential" }}"
-export OPENROUTER_API_KEY="{{ onepasswordRead "op://local/OpenRouterAPI/credential" }}"
+export ANTHROPIC_API_KEY="{{ onepasswordRead "op://local/ClaudeAPI/credential" "my.1password.com" }}"
+export OPENROUTER_API_KEY="{{ onepasswordRead "op://local/OpenRouterAPI/credential" "my.1password.com" }}"
 {{ end -}}
 {{- if eq .email "dat@purplefish.com" }}
-export ANTHROPIC_API_KEY="{{ onepasswordRead "op://local/PPFAnthropicAPI/credential" }}"
-export DEEPSEEK_API_KEY="{{ onepasswordRead "op://local/DeepSeek/credential" }}"
+export ANTHROPIC_API_KEY="{{ onepasswordRead "op://local/PPFAnthropicAPI/credential" "my.1password.com" }}"
+export DEEPSEEK_API_KEY="{{ onepasswordRead "op://local/DeepSeek/credential" "my.1password.com" }}"
+export GOOGLE_API_KEY="{{ onepasswordRead "op://local/GoogleAPI/credential" "my.1password.com" }}"
 {{ end -}}
 # MCP ENV Specific
 ## AWS
 export FASTMCP_LOG_LEVEL="ERROR"
 export AWS_DOCUMENTATION_PARTITION="aws"
-export GITHUB_PERSONAL_ACCESS_TOKEN="{{ onepasswordRead "op://local/GitHub/credential" }}"
+export GITHUB_PERSONAL_ACCESS_TOKEN="{{ onepasswordRead "op://local/GitHub/credential" "my.1password.com" }}"
 {{- if .isServer }}
 # KHOJ Setup
-export KHOJ_DJANGO_SECRET_KEY="{{ onepasswordRead "op://local/DjangoSecretKey/password" }}"
-export KHOJ_ADMIN_EMAIL="{{ onepasswordRead "op://local/KhojSelfHosted/username" }}"
-export KHOJ_ADMIN_PASSWORD="{{ onepasswordRead "op://local/DjangoSecretKey/password" }}"
+export KHOJ_DJANGO_SECRET_KEY="{{ onepasswordRead "op://local/DjangoSecretKey/password" "my.1password.com" }}"
+export KHOJ_ADMIN_EMAIL="{{ onepasswordRead "op://local/KhojSelfHosted/username" "my.1password.com" }}"
+export KHOJ_ADMIN_PASSWORD="{{ onepasswordRead "op://local/DjangoSecretKey/password" "my.1password.com" }}"
 export KHOJ_DEBUG=True
 export KHOJ_NO_HTTPS=False
 export KHOJ_TELEMENTRY_DISABLE=True
 export KHOJ_OPERATOR_ENABLED=True
 export KHOJ=DEFAULT_CHAT_MODEL=claude-sonnet-4-0
-export SERPER_DEV_API_KEY="{{ onepasswordRead "op://local/SerperWebScrape/credential" }}"
-export OLOSTEP_API_KEY="{{ onepasswordRead "op://local/olostep/credential" }}"
-export E2B_API_KEY="{{ onepasswordRead "op://local/E2B/credential" }}"
-export RESEND_API_KEY="{{ onepasswordRead "op://local/ResendAPI/credential" }}"
+export SERPER_DEV_API_KEY="{{ onepasswordRead "op://local/SerperWebScrape/credential" "my.1password.com" }}"
+export OLOSTEP_API_KEY="{{ onepasswordRead "op://local/olostep/credential" "my.1password.com" }}"
+export E2B_API_KEY="{{ onepasswordRead "op://local/E2B/credential" "my.1password.com" }}"
+export RESEND_API_KEY="{{ onepasswordRead "op://local/ResendAPI/credential" "my.1password.com" }}"
 export RESEND_EMAIL=dat.b.do@gmail.com
 {{ end -}}
