@@ -1,0 +1,14 @@
+dot_config/tmux/tmux.conf
+  h_004d65f5e4cf7b 3,60
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "70747c41d97688bc8c4215f8651893ae52cf1d42",
+  "prompts": {},
+  "humans": {
+    "h_004d65f5e4cf7b": {
+      "author": "datdo <dat@purplefish.com>"
+    }
+  }
+}
