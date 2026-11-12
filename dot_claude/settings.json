@@ -1,7 +1,11 @@
 {
+  "env": {
+    "CLAUDE_CODE_SUBAGENT_MODEL": "sonnet"
+  },
   "permissions": {
     "defaultMode": "auto"
   },
+  "model": "opus",
   "hooks": {
     "PostToolUse": [
       {
@@ -79,8 +83,5 @@
   "autoCompactEnabled": true,
   "agentPushNotifEnabled": false,
   "skipAutoPermissionPrompt": true,
-  "model": "opus",
-  "env": {
-    "CLAUDE_CODE_SUBAGENT_MODEL": "sonnet"
-  }
+  "theme": "dark"
 }

@@ -18,6 +18,12 @@ PNPM_GLOBALS=(
   aws-cdk
   aws-cdk-local
 )
+# Globals whose install scripts must run (amplify's postinstall downloads its binary).
+# pnpm 11+ blocks build scripts by default and, without a TTY, fails on the
+# approve-builds prompt ("IO error: not a terminal") instead of skipping it.
+PNPM_ALLOW_BUILDS=(
+  @aws-amplify/cli
+)
 
 load_nvm() { [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"; }
 
@@ -68,7 +74,9 @@ step_pnpm_globals() {
   fi
   log_info "Installing: ${missing[*]}"
   mkdir -p "$PNPM_HOME"
-  pnpm add -g "${missing[@]}" || { STEP_NOTE="pnpm add -g failed for: ${missing[*]}"; return 1; }
+  local allow_args=()
+  for pkg in "${PNPM_ALLOW_BUILDS[@]}"; do allow_args+=(--allow-build "$pkg"); done
+  pnpm add -g "${allow_args[@]}" "${missing[@]}" </dev/null || { STEP_NOTE="pnpm add -g failed for: ${missing[*]}"; return 1; }
   STEP_NOTE="installed ${#missing[@]} of ${#PNPM_GLOBALS[@]}"
 }
 
