@@ -1,0 +1,31 @@
+dot_claude/settings.json
+  s_639c8ffcaab59c::t_98225c4811cca9 2-4,8,86
+envvars.zsh.tmpl
+  s_639c8ffcaab59c::t_bc09963f355ede 1-2,6,8-9,12-14,20,23-25,31-34
+run_once_after_20-node.sh.tmpl
+  s_e30aa4a2322274::t_4ad6f9ca048f0f 21-26,77-79
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "403104c7a08a289e48b21d939918dbffd7777b7b",
+  "prompts": {},
+  "sessions": {
+    "s_639c8ffcaab59c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2e5a4cc5-387f-4c0e-8dcb-4acf704cb290",
+        "model": "unknown"
+      },
+      "human_author": "datdo <dat@purplefish.com>"
+    },
+    "s_e30aa4a2322274": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "67725d30-c414-4f28-8892-4a9b1980afc9",
+        "model": "unknown"
+      },
+      "human_author": "datdo <dat@purplefish.com>"
+    }
+  }
+}
