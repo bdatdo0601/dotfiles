@@ -186,6 +186,12 @@ The helper creates `claude-NAME` sessions on your normal tmux server and uses
 your existing tmux configuration. Calling attach from within tmux switches the
 current client instead of nesting another tmux.
 
+Shift-Enter inserts a newline inside tmux because `~/.config/tmux/tmux.conf`
+enables tmux extended keys and Zed's terminal keymap sends Shift-Enter as
+`ESC [13;2u`. After applying a tmux.conf change, restart the server with
+`tmux kill-server` (this ends running sessions). Ctrl-J also inserts a newline
+in any terminal.
+
 Apply just the helper, without running chezmoi bootstrap scripts:
 
 ```sh
@@ -197,7 +203,7 @@ a fake Claude executable, with no model calls):
 
 ```sh
 shellcheck dot_customscripts/executable_claude-session
-python3 helpers/test_claude_session.py
+python3 helpers/test_claude_session.py   # also checks tmux.conf key handling
 ```
 
 ## Backups Encrypted Files
