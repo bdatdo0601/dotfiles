@@ -169,9 +169,25 @@ letters, digits, underscores and hyphens and start with a letter or digit.
 Duplicate names are rejected; attach to the existing session or choose another
 name. This command grants Claude permission to run tools without approval.
 
+To start a session and attach immediately in one command:
+
+```sh
+claude-session start-attach iron ~/workspace/iron-fillet
+```
+
+Inside tmux, this switches the current client to the new session. Duplicate names
+are rejected; use `claude-session attach NAME` to enter an existing session.
+
 In Zed, open the Agent Panel's new-thread menu, choose **Terminal**, and run
-`claude-session attach iron`. Rename the Terminal Thread to match. The terminal
-and the Claude phone app control the same running Claude session. Attach once
+`claude-session attach iron`. The helper sets tmux's outer terminal title to
+`iron`, so Zed automatically uses the session name for the Terminal Thread.
+Without a terminal title, Zed falls back to the directory and process command.
+The title stays fixed as Claude works and across upgrades. For an existing
+session, detach and attach again to enable this; Claude does not need restarting.
+If you previously set a custom Zed title, clear it using **Rename Title** to
+return to the automatic title. See [Zed's Terminal Thread titles](https://zed.dev/docs/ai/terminal-threads#terminal-thread-titles).
+
+The terminal and the Claude phone app control the same running Claude session. Attach once
 after starting to complete any first-run prompts and obtain the phone link.
 Use the same OS user over SSH and locally. From another machine:
 
@@ -185,6 +201,19 @@ host awake. SSH disconnects are safe, but rebooting ends the running sessions.
 The helper creates `claude-NAME` sessions on your normal tmux server and uses
 your existing tmux configuration. Calling attach from within tmux switches the
 current client instead of nesting another tmux.
+
+To end one Claude tmux session or all of them:
+
+```sh
+claude-session kill iron
+claude-session kill-all
+```
+
+These commands terminate the selected sessions and all panes inside them,
+including any running work, and disconnect their attached terminals. `kill-all`
+selects only `claude-*` tmux sessions. Saved Claude conversation history remains
+available through `claude-session resume`. Killing all sessions when none are
+running succeeds without doing anything.
 
 To upgrade Claude Code and resume all managed conversations, run this from a
 separate terminal after Claude finishes its current work:

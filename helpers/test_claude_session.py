@@ -1,12 +1,18 @@
 """Exercise the helper with real tmux and a fake Claude; no model calls."""
 
+import fcntl
 import json
 import os
+import pty
+import select
 import shlex
 import shutil
+import struct
 import subprocess
 import sys
 import tempfile
+import termios
+import time
 import unittest
 import uuid
 from pathlib import Path
@@ -349,6 +355,102 @@ sys.exit(int(os.environ.get("FAKE_BREW_STATUS", "0")))
         self.assertEqual((self.base / "attach").read_text(),
                          "switch-client\n-t\n=claude-example\n")
 
+    def test_start_attach_creates_session_then_attaches_or_switches_client(self):
+        for name, env, command in (
+            ("terminal", self.env, "attach-session"),
+            ("nested", dict(self.env, TMUX="existing-client"), "switch-client"),
+        ):
+            with self.subTest(name=name):
+                self.run_helper("start-attach", name, str(self.base), env=env)
+                self.wait_ready(name)
+                self.assertEqual(self.record_for(name)["cwd"], str(self.base))
+                self.assertEqual((self.base / "attach").read_text(),
+                                 f"{command}\n-t\n=claude-{name}\n")
+
+    def test_start_attach_rejects_duplicate_without_attaching(self):
+        self.start()
+        original = self.record_for()
+        result = self.run_helper("start-attach", "example", str(self.base), success=False)
+        self.assertIn("already exists", result.stderr)
+        self.assertFalse((self.base / "attach").exists())
+        self.assertEqual(self.tmux_run("display-message", "-p", "-t", self.pane_for(),
+                                      "#{pane_pid}"), str(original["pid"]))
+
+    def test_attach_sends_session_name_to_outer_terminal(self):
+        self.start()
+        self.tmux_run("new-session", "-d", "-s", "unrelated", "tmux", "wait-for", "release")
+        before = self.tmux_run("display-message", "-p", "-t", "=unrelated:",
+                               "#{set-titles}|#{set-titles-string}")
+        # Forward attach to real tmux and capture its terminal escape sequences.
+        self.write_executable("tmux", f'''#!/bin/sh
+exec {shlex.quote(self.tmux)} -L {self.socket} -f /dev/null "$@"
+''')
+        master, slave = pty.openpty()
+        fcntl.ioctl(slave, termios.TIOCSWINSZ, struct.pack("HHHH", 24, 80, 0, 0))
+        client = subprocess.Popen(["bash", str(HELPER), "attach", "example"],
+                                  env=dict(self.env, TERM="xterm-256color"),
+                                  stdin=slave, stdout=slave, stderr=slave,
+                                  start_new_session=True)
+        os.close(slave)
+
+        def stop_client():
+            os.close(master)
+            client.kill()
+            client.wait(timeout=10)
+
+        self.addCleanup(stop_client)
+        output = b""
+        title = b"\x1b]0;example\x07"
+        deadline = time.monotonic() + 10
+        while title not in output:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0 or not select.select([master], [], [], remaining)[0]:
+                break
+            try:
+                chunk = os.read(master, 65536)
+            except OSError:
+                break
+            if not chunk:
+                break
+            output += chunk
+        self.assertIn(title, output)
+        self.assertEqual(self.tmux_run("display-message", "-p", "-t", "=unrelated:",
+                                      "#{set-titles}|#{set-titles-string}"), before)
+
+    def test_kill_uses_exact_name_and_keeps_saved_conversation(self):
+        self.start("example-long")
+        self.run_helper("kill", "example", success=False)
+        self.start()
+        session_id = self.record_for()["id"]
+        self.assertIn("Killed example", self.run_helper("kill", "example").stdout)
+        self.assertEqual(self.run_helper("list").stdout.strip(), "example-long")
+        self.assertTrue((self.base / (session_id + ".jsonl")).exists())
+        self.run_helper("kill", "missing", success=False)
+
+    def test_kill_all_only_ends_claude_sessions_and_handles_empty_server(self):
+        self.assertIn("No Claude sessions", self.run_helper("kill-all").stdout)
+        self.start("first")
+        self.start("second")
+        self.tmux_run("new-session", "-d", "-s", "unrelated", "tmux", "wait-for", "release")
+        result = self.run_helper("kill-all")
+        self.assertIn("Killed first", result.stdout)
+        self.assertIn("Killed second", result.stdout)
+        self.assertIn("No Claude sessions", self.run_helper("list").stdout)
+        self.tmux_run("has-session", "-t", "=unrelated")
+        self.assertIn("No Claude sessions", self.run_helper("kill-all").stdout)
+
+    def test_kill_all_from_claude_pane_ends_its_own_session_last(self):
+        self.start("first")
+        self.start("second")
+        self.tmux_run("new-session", "-d", "-s", "unrelated", "tmux", "wait-for", "release")
+        self.tmux_run("new-window", "-d", "-t", "=claude-first:",
+                      "bash", str(HELPER), "kill-all")
+        for _ in range(100):
+            if "No Claude sessions" in self.run_helper("list").stdout:
+                break
+        self.assertIn("No Claude sessions", self.run_helper("list").stdout)
+        self.tmux_run("has-session", "-t", "=unrelated")
+
     def test_empty_list_and_unrelated_sessions(self):
         self.assertIn("No Claude sessions", self.run_helper().stdout)
         subprocess.run([str(self.bin / "tmux"), "new-session", "-d", "-s",
@@ -360,11 +462,12 @@ sys.exit(int(os.environ.get("FAKE_BREW_STATUS", "0")))
         for name in ("", "-option", "bad.name", "bad:name", "a b", "$(touch INJECTED)"):
             with self.subTest(name=name):
                 self.run_helper("start", name, str(self.base), success=False)
+                self.run_helper("kill", name, success=False)
         self.run_helper("start", "valid", str(self.base / "missing"), success=False)
         self.run_helper("resume", "valid", str(self.base), "not-a-uuid", success=False)
         self.run_helper("attach", "missing", success=False)
-        for args in (("start",), ("resume",), ("attach",), ("list", "extra"),
-                     ("upgrade", "extra"), ("unknown",)):
+        for args in (("start",), ("start-attach",), ("resume",), ("attach",), ("list", "extra"),
+                     ("kill",), ("kill-all", "extra"), ("upgrade", "extra"), ("unknown",)):
             self.run_helper(*args, success=False)
         self.assertIn("Usage:", self.run_helper("--help").stdout)
 

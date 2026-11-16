@@ -5,10 +5,14 @@ usage() {
   cat <<'EOF'
 Usage:
   claude-session start NAME DIRECTORY  Start a detached Claude session
+  claude-session start-attach NAME DIRECTORY
+                                       Start a session and attach immediately
   claude-session resume NAME DIRECTORY SESSION_ID
                                        Start from a saved Claude conversation
   claude-session attach NAME           Attach from Zed or an SSH terminal
   claude-session list                  List running Claude tmux sessions
+  claude-session kill NAME             End one Claude tmux session
+  claude-session kill-all              End all Claude tmux sessions
   claude-session upgrade               Stop Claude, brew upgrade, resume all
 
 NAME must start with a letter or digit and contain only letters, digits,
@@ -25,13 +29,24 @@ EOF
 
 fail() { printf 'claude-session: %s\n' "$*" >&2; exit 1; }
 
+attach_session() {
+  # Zed reads the outer terminal title. Pin it to the helper's session name,
+  # so Claude's own pane titles and the tmux command line cannot replace it.
+  tmux set-option -t "$1:" set-titles-string "${1#=claude-}"
+  tmux set-option -t "$1:" set-titles on
+  if [[ -n "${TMUX:-}" ]]; then
+    exec tmux switch-client -t "$1"
+  fi
+  exec tmux attach-session -t "$1"
+}
+
 action=${1:-list}
 case "$action" in
   help|-h|--help) usage; exit 0 ;;
-  start) [[ $# == 3 ]] || { usage >&2; exit 2; } ;;
+  start|start-attach) [[ $# == 3 ]] || { usage >&2; exit 2; } ;;
   resume) [[ $# == 4 ]] || { usage >&2; exit 2; } ;;
-  attach) [[ $# == 2 ]] || { usage >&2; exit 2; } ;;
-  list|upgrade) [[ $# -le 1 ]] || { usage >&2; exit 2; } ;;
+  attach|kill) [[ $# == 2 ]] || { usage >&2; exit 2; } ;;
+  list|kill-all|upgrade) [[ $# -le 1 ]] || { usage >&2; exit 2; } ;;
   *) usage >&2; exit 2 ;;
 esac
 
@@ -45,31 +60,59 @@ export PATH
 
 command -v tmux >/dev/null || fail 'tmux is required (macOS: brew install tmux).'
 
-if [[ "$action" == list ]]; then
+if [[ "$action" == list || "$action" == kill-all ]]; then
   # No server is the normal empty-list case. Only show this helper's sessions.
   sessions=$(tmux list-sessions -F '#{session_name}' 2>/dev/null) || sessions=''
   found=false
+  current_session=''
+  deferred_session=''
+  if [[ "$action" == kill-all && -n "${TMUX_PANE:-}" ]]; then
+    current_session=$(tmux display-message -p -t "$TMUX_PANE" '#{session_name}') || current_session=''
+  fi
   while IFS= read -r session; do
     if [[ "$session" == claude-* ]]; then
-      printf '%s\n' "${session#claude-}"
+      if [[ "$action" == kill-all ]]; then
+        if [[ "$session" == "$current_session" ]]; then
+          # Killing our own session first could terminate this helper before
+          # it gets to the remaining sessions.
+          deferred_session=$session
+        else
+          tmux kill-session -t "=$session"
+          printf 'Killed %s\n' "${session#claude-}"
+        fi
+      else
+        printf '%s\n' "${session#claude-}"
+      fi
       found=true
     fi
   done <<< "$sessions"
-  "$found" || printf 'No Claude sessions. Start one: claude-session start NAME DIRECTORY\n'
+  if [[ -n "$deferred_session" ]]; then
+    printf 'Killing %s\n' "${deferred_session#claude-}"
+    tmux kill-session -t "=$deferred_session"
+  fi
+  if ! "$found"; then
+    if [[ "$action" == list ]]; then
+      printf 'No Claude sessions. Start one: claude-session start NAME DIRECTORY\n'
+    else
+      printf 'No Claude sessions.\n'
+    fi
+  fi
   exit 0
 fi
 
-if [[ "$action" == start || "$action" == resume || "$action" == attach ]]; then
+if [[ "$action" == start || "$action" == start-attach || "$action" == resume || "$action" == attach || "$action" == kill ]]; then
   name=$2
   [[ "$name" =~ ^[a-zA-Z0-9][a-zA-Z0-9_-]*$ ]] || fail 'Invalid name; use letters, digits, underscores and hyphens, starting with a letter or digit.'
   session="claude-$name"
   target="=$session"
-  if [[ "$action" == attach ]]; then
+  if [[ "$action" == attach || "$action" == kill ]]; then
     tmux has-session -t "$target" 2>/dev/null || fail "No session named '$name'. Run claude-session list."
-    if [[ -n "${TMUX:-}" ]]; then
-      exec tmux switch-client -t "$target"
+    if [[ "$action" == kill ]]; then
+      tmux kill-session -t "$target"
+      printf 'Killed %s\n' "$name"
+      exit 0
     fi
-    exec tmux attach-session -t "$target"
+    attach_session "$target"
   fi
 fi
 
@@ -240,5 +283,8 @@ fi
 tmux new-session -d -s "$session" -c "$directory" -e "PATH=$PATH" \
   "$claude_bin" "${claude_args[@]}"
 printf 'Started tmux session %s in %s\n' "$name" "$directory"
+if [[ "$action" == start-attach ]]; then
+  attach_session "$target"
+fi
 printf 'Attach: claude-session attach %s\n' "$name"
 printf 'Attach once to complete any Claude login, trust or Remote Control prompts.\n'
