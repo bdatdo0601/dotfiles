@@ -154,7 +154,7 @@ Ctrl + n --> File Tree
 ## Claude sessions over SSH and in Zed
 
 `claude-session` is installed in `~/.customscripts` (already on PATH). It needs
-tmux and Claude Code, both included in the Brewfile. Sign in to Claude Code with
+tmux, jq and Claude Code, all included in the Brewfile. Sign in to Claude Code with
 a Remote Control eligible Claude subscription on the host machine.
 
 ```sh
@@ -185,6 +185,39 @@ host awake. SSH disconnects are safe, but rebooting ends the running sessions.
 The helper creates `claude-NAME` sessions on your normal tmux server and uses
 your existing tmux configuration. Calling attach from within tmux switches the
 current client instead of nesting another tmux.
+
+To upgrade Claude Code and resume all managed conversations, run this from a
+separate terminal after Claude finishes its current work:
+
+```sh
+claude-session upgrade
+```
+
+The helper checks that every conversation has a saved transcript, stops Claude
+with SIGTERM, runs `brew upgrade claude-code@latest`, then restarts each conversation
+in its original tmux pane and directory using its exact
+[`--resume` ID](https://code.claude.com/docs/en/cli-reference). Attached terminals
+stay connected. Conversation history is restored and Claude waits for your next
+prompt. Other tmux sessions and extra shell panes are left running.
+The helper tracks the current conversation through `/clear` and `/resume` using a
+[`SessionStart` hook](https://code.claude.com/docs/en/hooks#sessionstart).
+
+If Homebrew fails or the upgrade is interrupted, the helper still attempts to
+resume every stopped conversation and returns an error. Failed restarts retain
+their tmux panes and conversation IDs: attach to inspect the error, fix the
+installation or finish startup prompts, then rerun `claude-session upgrade`.
+
+Sessions started before this tracking was added need a one-time restart. Inside
+each existing Claude session, copy its session ID from `/status`, then `/exit`.
+Reopen that conversation under the updated helper:
+
+```sh
+claude-session resume iron ~/workspace/iron-fillet SESSION_ID
+```
+
+Upgrade refuses to stop an untracked session; it never guesses which conversation
+to resume when several sessions share a directory. Newly opened conversations
+need at least one saved message before upgrading.
 
 Shift-Enter inserts a newline inside tmux because `~/.config/tmux/tmux.conf`
 enables tmux extended keys and Zed's terminal keymap sends Shift-Enter as

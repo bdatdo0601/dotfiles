@@ -5,8 +5,11 @@ usage() {
   cat <<'EOF'
 Usage:
   claude-session start NAME DIRECTORY  Start a detached Claude session
+  claude-session resume NAME DIRECTORY SESSION_ID
+                                       Start from a saved Claude conversation
   claude-session attach NAME           Attach from Zed or an SSH terminal
   claude-session list                  List running Claude tmux sessions
+  claude-session upgrade               Stop Claude, brew upgrade, resume all
 
 NAME must start with a letter or digit and contain only letters, digits,
 underscores or hyphens. Each name identifies one session on this machine.
@@ -15,6 +18,8 @@ Sessions use --dangerously-skip-permissions and --remote-control NAME.
 In Zed, create a Terminal Thread and run: claude-session attach NAME
 Detach with Ctrl-b, then d. Use /exit inside Claude to end the session.
 Keep the host awake; tmux preserves sessions across disconnects, not reboots.
+Run upgrade from a separate terminal after Claude has finished its work.
+It runs: brew upgrade claude-code@latest
 EOF
 }
 
@@ -24,8 +29,9 @@ action=${1:-list}
 case "$action" in
   help|-h|--help) usage; exit 0 ;;
   start) [[ $# == 3 ]] || { usage >&2; exit 2; } ;;
+  resume) [[ $# == 4 ]] || { usage >&2; exit 2; } ;;
   attach) [[ $# == 2 ]] || { usage >&2; exit 2; } ;;
-  list) [[ $# -le 1 ]] || { usage >&2; exit 2; } ;;
+  list|upgrade) [[ $# -le 1 ]] || { usage >&2; exit 2; } ;;
   *) usage >&2; exit 2 ;;
 esac
 
@@ -53,25 +59,178 @@ if [[ "$action" == list ]]; then
   exit 0
 fi
 
-name=$2
-[[ "$name" =~ ^[a-zA-Z0-9][a-zA-Z0-9_-]*$ ]] || fail 'Invalid name; use letters, digits, underscores and hyphens, starting with a letter or digit.'
-session="claude-$name"
-target="=$session"
-
-if [[ "$action" == attach ]]; then
-  tmux has-session -t "$target" 2>/dev/null || fail "No session named '$name'. Run claude-session list."
-  if [[ -n "${TMUX:-}" ]]; then
-    exec tmux switch-client -t "$target"
+if [[ "$action" == start || "$action" == resume || "$action" == attach ]]; then
+  name=$2
+  [[ "$name" =~ ^[a-zA-Z0-9][a-zA-Z0-9_-]*$ ]] || fail 'Invalid name; use letters, digits, underscores and hyphens, starting with a letter or digit.'
+  session="claude-$name"
+  target="=$session"
+  if [[ "$action" == attach ]]; then
+    tmux has-session -t "$target" 2>/dev/null || fail "No session named '$name'. Run claude-session list."
+    if [[ -n "${TMUX:-}" ]]; then
+      exec tmux switch-client -t "$target"
+    fi
+    exec tmux attach-session -t "$target"
   fi
-  exec tmux attach-session -t "$target"
 fi
 
+command -v jq >/dev/null || fail 'jq is required (macOS: brew install jq).'
+# SessionStart also fires after /clear and /resume. Record the actual current
+# conversation, rather than guessing the newest transcript in a directory.
+# These variables expand in the hook's shell, inside the Claude pane.
+hook_command=$(cat <<'HOOK'
+pid=$(tmux display-message -p -t "$TMUX_PANE" '#{pane_pid}') &&
+state=$(jq -ce --arg pid "$pid" '
+  select(.agent_id == null) |
+  {id: .session_id, directory: .cwd, transcript: .transcript_path, pid: $pid}
+') &&
+tmux set-option -p -t "$TMUX_PANE" @claude_session "$state"
+HOOK
+)
+settings=$(jq -cn --arg command "$hook_command" \
+  '{hooks:{SessionStart:[{hooks:[{type:"command",command:$command}]}]}}')
+
+resolve_claude() {
+  claude_bin=$(command -v claude) || return 1
+  # Resolve before changing the child's working directory. Resolve again after
+  # brew, since an upgrade may replace the executable or its symlink target.
+  if [[ "$claude_bin" != /* ]]; then
+    claude_bin="$(pwd -P)/$claude_bin"
+  fi
+}
+
+if [[ "$action" == upgrade ]]; then
+  command -v brew >/dev/null || fail 'Homebrew is required for upgrade.'
+  resolve_claude || fail 'claude is required. Install Claude Code and sign in first.'
+  lock_parent="${XDG_STATE_HOME:-$HOME/.local/state}/claude-session"
+  mkdir -p -- "$lock_parent"
+  lock="$lock_parent/upgrade.lock"
+  mkdir -- "$lock" 2>/dev/null || fail "Another upgrade is running. If it was interrupted without cleanup, remove $lock."
+  # Preflight failures only release the lock; no Claude process has been stopped.
+  trap 'rmdir -- "$lock"' EXIT
+  trap 'exit 130' INT
+  trap 'exit 143' TERM
+  trap 'exit 129' HUP
+
+  panes=() names=() ids=() directories=() exit_options=() pids=() stopping=()
+  sessions=$(tmux list-sessions -F '#{session_name}' 2>/dev/null) || sessions=''
+  while IFS= read -r session; do
+    [[ "$session" == claude-* ]] || continue
+    tracked=false
+    session_panes=$(tmux list-panes -s -t "=$session" -F '#{pane_id}')
+    while IFS= read -r pane; do
+      state=$(tmux show-options -pqv -t "$pane" @claude_session)
+      [[ -n "$state" ]] || continue
+      tracked=true
+      [[ "$pane" != "${TMUX_PANE:-}" ]] || fail 'Run upgrade from a separate terminal, outside the Claude panes being restarted.'
+      id=$(jq -er '.id | strings | select(length > 0)' <<< "$state") || fail "Missing conversation ID in $session."
+      directory=$(jq -er '.directory | strings | select(length > 0)' <<< "$state") || fail "Missing directory in $session."
+      transcript=$(jq -er '.transcript | strings | select(length > 0)' <<< "$state") || fail "Missing transcript path in $session."
+      [[ -d "$directory" ]] || fail "Directory no longer exists: $directory"
+      [[ -f "$transcript" ]] || fail "No saved conversation for $session yet. Send a message in Claude before upgrading."
+      pid=$(tmux display-message -p -t "$pane" '#{pane_pid}')
+      if [[ $(tmux display-message -p -t "$pane" '#{pane_dead}') == 0 ]]; then
+        [[ $(jq -r '.pid' <<< "$state") == "$pid" ]] || fail "Conversation tracking is not ready in $session. Attach to complete Claude's startup prompts first."
+      fi
+      panes+=("$pane") names+=("${session#claude-}") ids+=("$id") directories+=("$directory")
+      previous=$(tmux show-options -pqv -t "$pane" @claude_exit_option)
+      exit_options+=("${previous:-$(tmux display-message -p -t "$pane" '#{remain-on-exit}')}")
+      pids+=("$pid") stopping+=(false)
+    done <<< "$session_panes"
+    "$tracked" || fail "Session '${session#claude-}' has no conversation tracking. Exit it and restart it with the updated claude-session helper before upgrading."
+  done <<< "$sessions"
+
+  # Called by the EXIT trap, including on Homebrew errors and interruptions.
+  # shellcheck disable=SC2329
+  restore_sessions() {
+    status=$?
+    trap - EXIT INT TERM HUP
+    for ((i=0; i<${#panes[@]}; i++)); do
+      pane=${panes[i]}
+      dead=$(tmux display-message -p -t "$pane" '#{pane_dead}') || { status=1; continue; }
+      if "${stopping[i]}"; then
+        # A signal can interrupt the main wait loop while Claude is still
+        # shutting down. Keep its pane until shutdown and restoration finish.
+        deadline=$((SECONDS + 30))
+        while [[ "$dead" == 0 ]] && (( SECONDS < deadline )); do
+          sleep 0.1
+          dead=$(tmux display-message -p -t "$pane" '#{pane_dead}') || break
+        done
+        if [[ "$dead" != 1 ]]; then
+          printf 'claude-session: %s is still stopping; its pane is preserved. Rerun claude-session upgrade after it exits.\n' "${names[i]}" >&2
+          status=1
+          continue
+        fi
+      fi
+      if [[ "$dead" == 1 ]]; then
+        if resolve_claude && tmux respawn-pane -t "$pane" -c "${directories[i]}" -e "PATH=$PATH" \
+          "$claude_bin" --dangerously-skip-permissions --remote-control "${names[i]}" \
+          --settings "$settings" --resume "${ids[i]}"; then
+          # Confirm that the new process ran SessionStart before restoring the
+          # pane's exit behavior. Failed launches leave their metadata intact.
+          pid=$(tmux display-message -p -t "$pane" '#{pane_pid}')
+          deadline=$((SECONDS + 30))
+          ready=false
+          while (( SECONDS < deadline )); do
+            state=$(tmux show-options -pqv -t "$pane" @claude_session)
+            if [[ $(jq -r '.pid' <<< "$state") == "$pid" ]]; then
+              ready=true
+              break
+            fi
+            [[ $(tmux display-message -p -t "$pane" '#{pane_dead}') == 0 ]] || break
+            sleep 0.1
+          done
+          if ! "$ready"; then
+            printf 'claude-session: %s did not finish resuming; its pane is preserved. Attach to inspect startup prompts or errors, then rerun claude-session upgrade.\n' "${names[i]}" >&2
+            status=1
+            continue
+          fi
+          printf 'Resumed %s\n' "${names[i]}"
+        else
+          printf 'claude-session: Could not resume %s; fix the Claude installation and rerun claude-session upgrade.\n' "${names[i]}" >&2
+          status=1
+          continue
+        fi
+      fi
+      tmux set-option -p -t "$pane" remain-on-exit "${exit_options[i]}" || status=1
+      tmux set-option -pu -t "$pane" @claude_exit_option || status=1
+    done
+    rmdir -- "$lock"
+    exit "$status"
+  }
+  # Even a failed/cancelled upgrade restarts panes that have already stopped.
+  trap restore_sessions EXIT
+  for ((i=0; i<${#panes[@]}; i++)); do
+    tmux set-option -p -t "${panes[i]}" @claude_exit_option "${exit_options[i]}"
+    tmux set-option -p -t "${panes[i]}" remain-on-exit on
+  done
+  for ((i=0; i<${#panes[@]}; i++)); do
+    if [[ $(tmux display-message -p -t "${panes[i]}" '#{pane_dead}') == 0 ]]; then
+      printf 'Stopping %s\n' "${names[i]}"
+      stopping[i]=true
+      kill -TERM "${pids[i]}" || true
+    fi
+  done
+  deadline=$((SECONDS + 30))
+  for ((i=0; i<${#panes[@]}; i++)); do
+    pane=${panes[i]}
+    until [[ $(tmux display-message -p -t "$pane" '#{pane_dead}') == 1 ]]; do
+      (( SECONDS < deadline )) || fail 'Claude did not stop within 30 seconds; upgrade cancelled. Wait for it to exit and rerun claude-session upgrade.'
+      sleep 0.1
+    done
+  done
+  printf 'Running: brew upgrade claude-code@latest\n'
+  brew upgrade claude-code@latest
+  exit 0
+fi
+
+[[ ! -d "${XDG_STATE_HOME:-$HOME/.local/state}/claude-session/upgrade.lock" ]] || fail 'An upgrade is running; wait for it to finish before starting sessions.'
 [[ -d "$3" ]] || fail "Directory does not exist: $3"
 directory=$(cd -- "$3" && pwd -P)
-claude_bin=$(command -v claude) || fail 'claude is required. Install Claude Code and sign in first.'
-# Resolve the executable before changing the child's working directory.
-if [[ "$claude_bin" != /* ]]; then
-  claude_bin="$(pwd -P)/$claude_bin"
+resolve_claude || fail 'claude is required. Install Claude Code and sign in first.'
+claude_args=(--dangerously-skip-permissions --remote-control "$name" --settings "$settings")
+if [[ "$action" == resume ]]; then
+  [[ "$4" =~ ^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$ ]] || fail 'Invalid conversation ID; copy the session UUID from /status inside Claude.'
+  claude_args+=(--resume "$4")
 fi
 if tmux has-session -t "$target" 2>/dev/null; then
   fail "Session '$name' already exists. Attach with: claude-session attach $name"
@@ -79,7 +238,7 @@ fi
 # Multiple command arguments make tmux exec directly, without shell parsing.
 # Forward PATH because an existing tmux server may have an older environment.
 tmux new-session -d -s "$session" -c "$directory" -e "PATH=$PATH" \
-  "$claude_bin" --dangerously-skip-permissions --remote-control "$name"
+  "$claude_bin" "${claude_args[@]}"
 printf 'Started tmux session %s in %s\n' "$name" "$directory"
 printf 'Attach: claude-session attach %s\n' "$name"
 printf 'Attach once to complete any Claude login, trust or Remote Control prompts.\n'
