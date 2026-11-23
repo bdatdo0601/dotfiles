@@ -10,10 +10,11 @@ rex.bind("ctrl+b>h", "pane.focus", { direction = "left" })              -- :16
 rex.bind("ctrl+b>j", "pane.focus", { direction = "down" })              -- :17
 rex.bind("ctrl+b>k", "pane.focus", { direction = "up" })                -- :18
 rex.bind("ctrl+b>l", "pane.focus", { direction = "right" })             -- :19
-rex.bind("alt+left", "pane.focus", { direction = "left" })              -- :28
-rex.bind("alt+right", "pane.focus", { direction = "right" })            -- :29
-rex.bind("alt+up", "pane.focus", { direction = "up" })                  -- :30
-rex.bind("alt+down", "pane.focus", { direction = "down" })              -- :31
+-- Pane focus on cmd+alt+arrow (iTerm2 default) so plain alt+arrow stays word motion.
+rex.bind("cmd+alt+left", "pane.focus", { direction = "left" })              -- :28
+rex.bind("cmd+alt+right", "pane.focus", { direction = "right" })            -- :29
+rex.bind("cmd+alt+up", "pane.focus", { direction = "up" })                  -- :30
+rex.bind("cmd+alt+down", "pane.focus", { direction = "down" })              -- :31
 rex.bind("shift+left", "client.tab.previous")                           -- :34
 rex.bind("shift+right", "client.tab.next")                              -- :35
 rex.bind("ctrl+b>shift+'", "pane.split", { direction = "down" })        -- :58

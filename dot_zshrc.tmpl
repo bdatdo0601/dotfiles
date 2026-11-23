@@ -218,3 +218,10 @@ export PATH="$PROTO_HOME/shims:$PROTO_HOME/bin:$PATH";
 
 # cubic
 export PATH="$HOME/.cubic/bin":$PATH
+
+# Added by Antigravity CLI installer
+export PATH="$HOME/.local/bin:$PATH"
+
+# alt+left/right word motion (terminals send ^[[1;3D / ^[[1;3C)
+bindkey '^[[1;3D' backward-word
+bindkey '^[[1;3C' forward-word
