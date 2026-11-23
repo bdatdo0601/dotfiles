@@ -6,34 +6,31 @@ usage() {
 Usage:
   claude-session start NAME DIRECTORY  Start a detached Claude session
   claude-session start-attach NAME DIRECTORY
-                                       Start a session and attach immediately
-  claude-session rex-start NAME DIRECTORY
-                                       Start a session in Rex instead of tmux,
-                                       with a lazygit pane beside Claude
+                                       Start a session and show it immediately
   claude-session resume NAME DIRECTORY SESSION_ID
                                        Start from a saved Claude conversation
-  claude-session attach NAME           Attach from Zed or an SSH terminal
+  claude-session attach NAME           Show a Rex session in the Rex app, or
+                                       attach to a tmux one (Zed, SSH)
   claude-session list                  List sessions where Claude is running
-                                       (tmux and Rex)
-  claude-session kill NAME             End one Claude session (tmux or Rex)
-  claude-session kill-all              End all Claude sessions (tmux and Rex)
+  claude-session kill NAME             End one Claude session
+  claude-session kill-all              End all Claude sessions
   claude-session upgrade               Stop Claude, brew upgrade, resume all
-                                       (tmux and Rex)
 
 NAME must start with a letter or digit and contain only letters, digits,
 underscores or hyphens. Each name identifies one session on this machine.
 Sessions use --dangerously-skip-permissions and --remote-control NAME.
 
-In Zed, create a Terminal Thread and run: claude-session attach NAME
-Detach with Ctrl-b, then d. Use /exit inside Claude to end the session.
-Keep the host awake; tmux preserves sessions across disconnects, not reboots.
-Run upgrade from a separate terminal after Claude has finished its work.
-It runs: brew upgrade claude-code@latest
-
-Rex sessions (rex-start) run in the Rex server, not tmux. Open them from the
+New sessions run in Rex when the rex command is installed, with a lazygit
+pane beside Claude; otherwise they run in tmux. Open Rex sessions from the
 Rex session picker (Shift-Cmd-K). Rex's own hook tells Claude which Rex session
-and pane it is in, so it can open splits beside itself. upgrade resumes each
-Rex session's conversation in the same pane.
+and pane it is in, so it can open splits beside itself.
+
+For a tmux session, run claude-session attach NAME in any terminal. Detach
+with Ctrl-b, then d. Use /exit inside Claude to end a session.
+Keep the host awake; Rex and tmux keep sessions across disconnects, not reboots.
+Run upgrade from a separate terminal after Claude has finished its work.
+It runs: brew upgrade claude-code@latest, then resumes each conversation in
+the same pane.
 EOF
 }
 
@@ -83,7 +80,10 @@ rex_wrapper_pid() {
   read -r pid _block < "$rex_state/$1.pid" || return 1
   [[ "$pid" =~ ^[0-9]+$ ]] || return 1
   # Guard against a stale file whose PID now belongs to another process.
-  [[ $(ps -o command= -p "$pid" 2>/dev/null) == *"__rex-run $1" ]] || return 1
+  # A resumed session also passes its conversation ID after the name.
+  local command
+  command=$(ps -o command= -p "$pid" 2>/dev/null) || return 1
+  [[ "$command" == *"__rex-run $1" || "$command" == *"__rex-run $1 "* ]] || return 1
   printf '%s\n' "$pid"
 }
 
@@ -100,6 +100,21 @@ rex_claude_pid() {
   return 1
 }
 
+# Shows Rex session $1 in every connected Rex app; fails if none showed it.
+rex_show() {
+  local client output shown=false
+  for client in $(rex client ls --json 2>/dev/null |
+    jq -r '.clients[]? | select(.info.kind? == "app") | .client_id'); do
+    if output=$(rex -C "$client" "do" session.select "session_id=$1" 2>&1) &&
+      [[ "$output" != *Error:* ]]; then
+      shown=true
+    elif [[ "$output" == *"not accepting actions"* ]]; then
+      printf 'claude-session: to let it switch sessions, turn on Remote Control in Rex Settings, under Rex Server.\n' >&2
+    fi
+  done
+  "$shown"
+}
+
 # Succeeds when a pane of tmux session $1 is alive and running Claude.
 tmux_runs_claude() {
   local dead pid
@@ -114,9 +129,10 @@ tmux_runs_claude() {
 action=${1:-list}
 case "$action" in
   help|-h|--help) usage; exit 0 ;;
-  start|start-attach|rex-start) [[ $# == 3 ]] || { usage >&2; exit 2; } ;;
+  start|start-attach) [[ $# == 3 ]] || { usage >&2; exit 2; } ;;
   resume) [[ $# == 4 ]] || { usage >&2; exit 2; } ;;
-  attach|kill|__rex-run) [[ $# == 2 ]] || { usage >&2; exit 2; } ;;
+  attach|kill) [[ $# == 2 ]] || { usage >&2; exit 2; } ;;
+  __rex-run) [[ $# == 2 || $# == 3 ]] || { usage >&2; exit 2; } ;;
   list|kill-all|upgrade) [[ $# -le 1 ]] || { usage >&2; exit 2; } ;;
   *) usage >&2; exit 2 ;;
 esac
@@ -196,7 +212,7 @@ if [[ "$action" == list || "$action" == kill-all ]]; then
   exit 0
 fi
 
-if [[ "$action" == start || "$action" == start-attach || "$action" == rex-start || "$action" == resume || "$action" == attach || "$action" == kill || "$action" == __rex-run ]]; then
+if [[ "$action" == start || "$action" == start-attach || "$action" == resume || "$action" == attach || "$action" == kill || "$action" == __rex-run ]]; then
   name=$2
   [[ "$name" =~ ^[a-zA-Z0-9][a-zA-Z0-9_-]*$ ]] || fail 'Invalid name; use letters, digits, underscores and hyphens, starting with a letter or digit.'
   session="claude-$name"
@@ -204,12 +220,15 @@ if [[ "$action" == start || "$action" == start-attach || "$action" == rex-start 
   if [[ "$action" == attach || "$action" == kill ]]; then
     if ! tmux has-session -t "$target" 2>/dev/null; then
       rex_id=$(rex_session_id "$session")
-      if [[ -n "$rex_id" && "$action" == kill ]]; then
-        rex kill "$rex_id" >/dev/null
-        printf 'Killed %s\n' "$name"
+      if [[ -n "$rex_id" ]]; then
+        if [[ "$action" == kill ]]; then
+          rex kill "$rex_id" >/dev/null
+          printf 'Killed %s\n' "$name"
+          exit 0
+        fi
+        rex_show "$rex_id" || fail "Could not show '$name' in Rex; open it from the Rex session picker (Shift-Cmd-K)."
         exit 0
       fi
-      [[ -z "$rex_id" ]] || fail "'$name' runs in Rex; open it from the Rex session picker (Shift-Cmd-K)."
     fi
     tmux has-session -t "$target" 2>/dev/null || fail "No session named '$name'. Run claude-session list."
     if [[ "$action" == kill ]]; then
@@ -246,7 +265,7 @@ resolve_claude() {
   fi
 }
 
-# Internal: runs inside a Rex session made by rex-start. It keeps Claude in the
+# Internal: runs inside each Rex session that start makes. It keeps Claude in the
 # same Rex pane across upgrades: when upgrade leaves NAME.restart and stops
 # Claude, this waits for the upgrade to finish and resumes the conversation.
 if [[ "$action" == __rex-run ]]; then
@@ -265,6 +284,7 @@ if [[ "$action" == __rex-run ]]; then
   rex_settings=$(jq -cn --arg command "$rex_hook" \
     '{hooks:{SessionStart:[{hooks:[{type:"command",command:$command}]}]}}')
   resume_args=()
+  [[ -z "${3:-}" ]] || resume_args=(--resume "$3")
   while :; do
     resolve_claude || fail 'claude is required. Install Claude Code and sign in first.'
     claude_status=0
@@ -472,16 +492,21 @@ fi
 [[ -d "$3" ]] || fail "Directory does not exist: $3"
 directory=$(cd -- "$3" && pwd -P)
 resolve_claude || fail 'claude is required. Install Claude Code and sign in first.'
-if [[ "$action" == rex-start ]]; then
-  command -v rex >/dev/null || fail 'rex is required; run chezmoi apply to link ~/.local/bin/rex.'
-  if tmux has-session -t "$target" 2>/dev/null || [[ -n $(rex_session_id "$session") ]]; then
-    fail "Session '$name' already exists. Run claude-session list."
-  fi
+resume_id=''
+if [[ "$action" == resume ]]; then
+  [[ "$4" =~ ^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$ ]] || fail 'Invalid conversation ID; copy the session UUID from /status inside Claude.'
+  resume_id=$4
+fi
+if tmux has-session -t "$target" 2>/dev/null || [[ -n $(rex_session_id "$session") ]]; then
+  fail "Session '$name' already exists. Attach with: claude-session attach $name"
+fi
+
+if command -v rex >/dev/null; then
   # The __rex-run wrapper starts Claude and keeps it in this pane on upgrade.
   script_path="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)/$(basename -- "${BASH_SOURCE[0]}")"
   # Forward PATH, as for tmux, so the wrapper finds the same claude.
   created=$(rex new "$session" -c "$directory" --window "$name" --json -- \
-    env "PATH=$PATH" "$script_path" __rex-run "$name") ||
+    env "PATH=$PATH" "$script_path" __rex-run "$name" ${resume_id:+"$resume_id"}) ||
     fail 'rex new failed; is the Rex app running?'
   rex_id=$(jq -r '.session_id' <<< "$created")
   claude_block=$(jq -r '.initial_windows[0].block_ids[0]' <<< "$created")
@@ -491,17 +516,16 @@ if [[ "$action" == rex-start ]]; then
       printf 'claude-session: could not open the lazygit pane; Claude is running.\n' >&2
   fi
   printf 'Started Rex session %s in %s\n' "$name" "$directory"
-  printf 'Open it from the Rex session picker (Shift-Cmd-K) to finish any Claude prompts.\n'
+  if [[ "$action" == start-attach ]] && rex_show "$rex_id"; then
+    exit 0
+  fi
+  printf 'Show it: claude-session attach %s (or the Rex session picker, Shift-Cmd-K)\n' "$name"
+  printf 'Open it once to complete any Claude login, trust or Remote Control prompts.\n'
   exit 0
 fi
+
 claude_args=(--dangerously-skip-permissions --remote-control "$name" --settings "$settings")
-if [[ "$action" == resume ]]; then
-  [[ "$4" =~ ^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$ ]] || fail 'Invalid conversation ID; copy the session UUID from /status inside Claude.'
-  claude_args+=(--resume "$4")
-fi
-if tmux has-session -t "$target" 2>/dev/null; then
-  fail "Session '$name' already exists. Attach with: claude-session attach $name"
-fi
+[[ -z "$resume_id" ]] || claude_args+=(--resume "$resume_id")
 # Multiple command arguments make tmux exec directly, without shell parsing.
 # Forward PATH because an existing tmux server may have an older environment.
 tmux new-session -d -s "$session" -c "$directory" -e "PATH=$PATH" \
