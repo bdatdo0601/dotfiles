@@ -13,10 +13,12 @@ Usage:
   claude-session resume NAME DIRECTORY SESSION_ID
                                        Start from a saved Claude conversation
   claude-session attach NAME           Attach from Zed or an SSH terminal
-  claude-session list                  List running Claude sessions (tmux and Rex)
+  claude-session list                  List sessions where Claude is running
+                                       (tmux and Rex)
   claude-session kill NAME             End one Claude session (tmux or Rex)
-  claude-session kill-all              End all Claude tmux sessions
+  claude-session kill-all              End all Claude sessions (tmux and Rex)
   claude-session upgrade               Stop Claude, brew upgrade, resume all
+                                       (tmux and Rex)
 
 NAME must start with a letter or digit and contain only letters, digits,
 underscores or hyphens. Each name identifies one session on this machine.
@@ -30,8 +32,8 @@ It runs: brew upgrade claude-code@latest
 
 Rex sessions (rex-start) run in the Rex server, not tmux. Open them from the
 Rex session picker (Shift-Cmd-K). Rex's own hook tells Claude which Rex session
-and pane it is in, so it can open splits beside itself. upgrade does not stop
-or resume Rex sessions; they keep the old Claude until you restart them.
+and pane it is in, so it can open splits beside itself. upgrade resumes each
+Rex session's conversation in the same pane.
 EOF
 }
 
@@ -48,11 +50,65 @@ attach_session() {
   exec tmux attach-session -t "$1"
 }
 
-# Prints the ID of the Rex session labelled $1, or nothing.
-rex_session_id() {
+state_root="${XDG_STATE_HOME:-$HOME/.local/state}/claude-session"
+lock="$state_root/upgrade.lock"
+# Per-name files for Rex sessions: NAME.pid (wrapper PID and Rex block),
+# NAME.json (current conversation, written by Claude's SessionStart hook) and
+# NAME.restart (asks the wrapper to resume Claude after it exits).
+rex_state="$state_root/rex"
+
+# Prints "label<TAB>session_id" for each Rex session labelled claude-*.
+rex_claude_sessions() {
   command -v rex >/dev/null && command -v jq >/dev/null || return 0
   rex ls --json 2>/dev/null |
-    jq -r --arg label "$1" '[.sessions[]? | select(.label == $label)][0].session_id // empty'
+    jq -r '.sessions[]? | select(.label | strings | startswith("claude-")) | "\(.label)\t\(.session_id)"' ||
+    true
+}
+
+# Prints the ID of the Rex session labelled $1, or nothing.
+rex_session_id() {
+  local label id
+  while IFS=$'\t' read -r label id; do
+    if [[ "$label" == "$1" ]]; then
+      printf '%s\n' "$id"
+      return 0
+    fi
+  done <<< "$(rex_claude_sessions)"
+}
+
+# Prints the PID of the live __rex-run wrapper for NAME $1.
+rex_wrapper_pid() {
+  local pid _block
+  [[ -f "$rex_state/$1.pid" ]] || return 1
+  read -r pid _block < "$rex_state/$1.pid" || return 1
+  [[ "$pid" =~ ^[0-9]+$ ]] || return 1
+  # Guard against a stale file whose PID now belongs to another process.
+  [[ $(ps -o command= -p "$pid" 2>/dev/null) == *"__rex-run $1" ]] || return 1
+  printf '%s\n' "$pid"
+}
+
+# Prints the PID of the Claude process the wrapper for NAME $1 is running.
+rex_claude_pid() {
+  local wrapper child
+  wrapper=$(rex_wrapper_pid "$1") || return 1
+  for child in $(pgrep -P "$wrapper"); do
+    if [[ $(ps -o command= -p "$child" 2>/dev/null) == *claude* ]]; then
+      printf '%s\n' "$child"
+      return 0
+    fi
+  done
+  return 1
+}
+
+# Succeeds when a pane of tmux session $1 is alive and running Claude.
+tmux_runs_claude() {
+  local dead pid
+  while read -r dead pid; do
+    if [[ "$dead" == 0 && $(ps -o command= -p "$pid" 2>/dev/null) == *claude* ]]; then
+      return 0
+    fi
+  done <<< "$(tmux list-panes -s -t "=$1" -F '#{pane_dead} #{pane_pid}' 2>/dev/null)"
+  return 1
 }
 
 action=${1:-list}
@@ -60,7 +116,7 @@ case "$action" in
   help|-h|--help) usage; exit 0 ;;
   start|start-attach|rex-start) [[ $# == 3 ]] || { usage >&2; exit 2; } ;;
   resume) [[ $# == 4 ]] || { usage >&2; exit 2; } ;;
-  attach|kill) [[ $# == 2 ]] || { usage >&2; exit 2; } ;;
+  attach|kill|__rex-run) [[ $# == 2 ]] || { usage >&2; exit 2; } ;;
   list|kill-all|upgrade) [[ $# -le 1 ]] || { usage >&2; exit 2; } ;;
   *) usage >&2; exit 2 ;;
 esac
@@ -85,35 +141,50 @@ if [[ "$action" == list || "$action" == kill-all ]]; then
     current_session=$(tmux display-message -p -t "$TMUX_PANE" '#{session_name}') || current_session=''
   fi
   while IFS= read -r session; do
-    if [[ "$session" == claude-* ]]; then
-      if [[ "$action" == kill-all ]]; then
-        if [[ "$session" == "$current_session" ]]; then
-          # Killing our own session first could terminate this helper before
-          # it gets to the remaining sessions.
-          deferred_session=$session
-        else
-          tmux kill-session -t "=$session"
-          printf 'Killed %s\n' "${session#claude-}"
-        fi
+    [[ "$session" == claude-* ]] || continue
+    if [[ "$action" == kill-all ]]; then
+      if [[ "$session" == "$current_session" ]]; then
+        # Killing our own session first could terminate this helper before
+        # it gets to the remaining sessions.
+        deferred_session=$session
       else
-        printf '%s\n' "${session#claude-}"
+        tmux kill-session -t "=$session"
+        printf 'Killed %s\n' "${session#claude-}"
       fi
+      found=true
+    elif tmux_runs_claude "$session"; then
+      # list shows only sessions where Claude is still running.
+      printf '%s\n' "${session#claude-}"
       found=true
     fi
   done <<< "$sessions"
-  # kill-all stays tmux-only; Rex sessions are listed but ended one by one.
-  if [[ "$action" == list ]] && command -v rex >/dev/null && command -v jq >/dev/null; then
-    rex_labels=$(rex ls --json 2>/dev/null |
-      jq -r '.sessions[]?.label | strings | select(startswith("claude-"))') || rex_labels=''
-    while IFS= read -r label; do
-      [[ -n "$label" ]] || continue
-      printf '%s (rex)\n' "${label#claude-}"
+  deferred_rex_name=''
+  deferred_rex_id=''
+  while IFS=$'\t' read -r label rex_id; do
+    [[ -n "$label" ]] || continue
+    rex_name=${label#claude-}
+    if [[ "$action" == kill-all ]]; then
+      if [[ "$rex_id" == "${REX_SESSION:-}" ]]; then
+        deferred_rex_name=$rex_name
+        deferred_rex_id=$rex_id
+      elif rex kill "$rex_id" >/dev/null; then
+        printf 'Killed %s (rex)\n' "$rex_name"
+      else
+        printf 'claude-session: could not kill Rex session %s\n' "$rex_name" >&2
+      fi
       found=true
-    done <<< "$rex_labels"
-  fi
+    elif rex_claude_pid "$rex_name" >/dev/null; then
+      printf '%s (rex)\n' "$rex_name"
+      found=true
+    fi
+  done <<< "$(rex_claude_sessions)"
   if [[ -n "$deferred_session" ]]; then
     printf 'Killing %s\n' "${deferred_session#claude-}"
     tmux kill-session -t "=$deferred_session"
+  fi
+  if [[ -n "$deferred_rex_id" ]]; then
+    printf 'Killing %s (rex)\n' "$deferred_rex_name"
+    rex kill "$deferred_rex_id" >/dev/null
   fi
   if ! "$found"; then
     if [[ "$action" == list ]]; then
@@ -125,7 +196,7 @@ if [[ "$action" == list || "$action" == kill-all ]]; then
   exit 0
 fi
 
-if [[ "$action" == start || "$action" == start-attach || "$action" == rex-start || "$action" == resume || "$action" == attach || "$action" == kill ]]; then
+if [[ "$action" == start || "$action" == start-attach || "$action" == rex-start || "$action" == resume || "$action" == attach || "$action" == kill || "$action" == __rex-run ]]; then
   name=$2
   [[ "$name" =~ ^[a-zA-Z0-9][a-zA-Z0-9_-]*$ ]] || fail 'Invalid name; use letters, digits, underscores and hyphens, starting with a letter or digit.'
   session="claude-$name"
@@ -175,12 +246,52 @@ resolve_claude() {
   fi
 }
 
+# Internal: runs inside a Rex session made by rex-start. It keeps Claude in the
+# same Rex pane across upgrades: when upgrade leaves NAME.restart and stops
+# Claude, this waits for the upgrade to finish and resumes the conversation.
+if [[ "$action" == __rex-run ]]; then
+  mkdir -p -- "$rex_state"
+  pidfile="$rex_state/$name.pid"
+  statefile="$rex_state/$name.json"
+  marker="$rex_state/$name.restart"
+  printf '%s %s\n' "$$" "${REX_BLOCK:-}" > "$pidfile"
+  # shellcheck disable=SC2329 # called by the EXIT trap
+  remove_rex_files() { rm -f -- "$pidfile" "$statefile" "$statefile.tmp" "$marker"; }
+  trap remove_rex_files EXIT
+  trap 'exit 129' HUP
+  trap 'exit 143' TERM
+  printf -v quoted_state '%q' "$statefile"
+  rex_hook="jq -ce 'select(.agent_id == null) | {id: .session_id, directory: .cwd, transcript: .transcript_path, started: now}' > $quoted_state.tmp && mv $quoted_state.tmp $quoted_state"
+  rex_settings=$(jq -cn --arg command "$rex_hook" \
+    '{hooks:{SessionStart:[{hooks:[{type:"command",command:$command}]}]}}')
+  resume_args=()
+  while :; do
+    resolve_claude || fail 'claude is required. Install Claude Code and sign in first.'
+    claude_status=0
+    "$claude_bin" --dangerously-skip-permissions --remote-control "$name" \
+      --settings "$rex_settings" ${resume_args[@]+"${resume_args[@]}"} || claude_status=$?
+    [[ -f "$marker" ]] || exit "$claude_status"
+    rm -f -- "$marker"
+    if [[ -d "$lock" ]]; then
+      printf 'Waiting for claude-session upgrade to finish...\n'
+      while [[ -d "$lock" ]]; do sleep 0.5; done
+    fi
+    resume_args=()
+    if id=$(jq -er '.id | strings | select(length > 0)' "$statefile" 2>/dev/null); then
+      resume_args=(--resume "$id")
+      if conversation_dir=$(jq -er '.directory | strings' "$statefile" 2>/dev/null); then
+        cd -- "$conversation_dir" || true
+      fi
+    else
+      printf 'claude-session: no saved conversation to resume; starting a new one.\n' >&2
+    fi
+  done
+fi
+
 if [[ "$action" == upgrade ]]; then
   command -v brew >/dev/null || fail 'Homebrew is required for upgrade.'
   resolve_claude || fail 'claude is required. Install Claude Code and sign in first.'
-  lock_parent="${XDG_STATE_HOME:-$HOME/.local/state}/claude-session"
-  mkdir -p -- "$lock_parent"
-  lock="$lock_parent/upgrade.lock"
+  mkdir -p -- "$state_root"
   mkdir -- "$lock" 2>/dev/null || fail "Another upgrade is running. If it was interrupted without cleanup, remove $lock."
   # Preflight failures only release the lock; no Claude process has been stopped.
   trap 'rmdir -- "$lock"' EXIT
@@ -213,8 +324,30 @@ if [[ "$action" == upgrade ]]; then
       exit_options+=("${previous:-$(tmux display-message -p -t "$pane" '#{remain-on-exit}')}")
       pids+=("$pid") stopping+=(false)
     done <<< "$session_panes"
-    "$tracked" || fail "Session '${session#claude-}' has no conversation tracking. Exit it and restart it with the updated claude-session helper before upgrading."
+    if ! "$tracked"; then
+      # A session that is not running Claude has nothing to restart.
+      tmux_runs_claude "$session" || continue
+      fail "Session '${session#claude-}' has no conversation tracking. Exit it and restart it with the updated claude-session helper before upgrading."
+    fi
   done <<< "$sessions"
+
+  # Rex sessions: their __rex-run wrapper resumes Claude once the lock is gone.
+  rex_names=() rex_pids=() rex_stopping=()
+  while IFS=$'\t' read -r label _rex_id; do
+    [[ -n "$label" ]] || continue
+    rex_name=${label#claude-}
+    # A session whose Claude has already exited has nothing to restart.
+    rex_pid=$(rex_claude_pid "$rex_name") || continue
+    read -r _wrapper rex_block < "$rex_state/$rex_name.pid"
+    [[ -z "${REX_BLOCK:-}" || "$rex_block" != "$REX_BLOCK" ]] || fail 'Run upgrade from a separate terminal, outside the Claude panes being restarted.'
+    state=$(cat -- "$rex_state/$rex_name.json" 2>/dev/null) || fail "Conversation tracking is not ready in Rex session $rex_name. Open it to complete Claude's startup prompts first."
+    transcript=$(jq -er '.transcript | strings | select(length > 0)' <<< "$state") || fail "Missing transcript path in Rex session $rex_name."
+    jq -e '.id | strings | select(length > 0)' <<< "$state" >/dev/null || fail "Missing conversation ID in Rex session $rex_name."
+    [[ -f "$transcript" ]] || fail "No saved conversation for Rex session $rex_name yet. Send a message in Claude before upgrading."
+    rex_names+=("$rex_name") rex_pids+=("$rex_pid") rex_stopping+=(false)
+  done <<< "$(rex_claude_sessions)"
+  # SessionStart stamps .started; a resumed Claude stamps a later time.
+  restart_started=$(date +%s)
 
   # Called by the EXIT trap, including on Homebrew errors and interruptions.
   # shellcheck disable=SC2329
@@ -271,7 +404,30 @@ if [[ "$action" == upgrade ]]; then
       tmux set-option -p -t "$pane" remain-on-exit "${exit_options[i]}" || status=1
       tmux set-option -pu -t "$pane" @claude_exit_option || status=1
     done
+    # Removing the lock lets each Rex wrapper resume its conversation.
     rmdir -- "$lock"
+    for ((i=0; i<${#rex_names[@]}; i++)); do
+      "${rex_stopping[i]}" || continue
+      rex_name=${rex_names[i]}
+      deadline=$((SECONDS + 60))
+      ready=false
+      while (( SECONDS < deadline )); do
+        if rex_claude_pid "$rex_name" >/dev/null &&
+          jq -e --argjson since "$restart_started" '.started >= $since' \
+            "$rex_state/$rex_name.json" >/dev/null 2>&1; then
+          ready=true
+          break
+        fi
+        rex_wrapper_pid "$rex_name" >/dev/null || break
+        sleep 0.2
+      done
+      if "$ready"; then
+        printf 'Resumed %s (rex)\n' "$rex_name"
+      else
+        printf 'claude-session: Rex session %s has not resumed yet; open it in Rex to check for startup prompts or errors.\n' "$rex_name" >&2
+        status=1
+      fi
+    done
     exit "$status"
   }
   # Even a failed/cancelled upgrade restarts panes that have already stopped.
@@ -287,10 +443,22 @@ if [[ "$action" == upgrade ]]; then
       kill -TERM "${pids[i]}" || true
     fi
   done
+  for ((i=0; i<${#rex_names[@]}; i++)); do
+    printf 'Stopping %s (rex)\n' "${rex_names[i]}"
+    : > "$rex_state/${rex_names[i]}.restart"
+    rex_stopping[i]=true
+    kill -TERM "${rex_pids[i]}" || true
+  done
   deadline=$((SECONDS + 30))
   for ((i=0; i<${#panes[@]}; i++)); do
     pane=${panes[i]}
     until [[ $(tmux display-message -p -t "$pane" '#{pane_dead}') == 1 ]]; do
+      (( SECONDS < deadline )) || fail 'Claude did not stop within 30 seconds; upgrade cancelled. Wait for it to exit and rerun claude-session upgrade.'
+      sleep 0.1
+    done
+  done
+  for ((i=0; i<${#rex_names[@]}; i++)); do
+    while kill -0 "${rex_pids[i]}" 2>/dev/null; do
       (( SECONDS < deadline )) || fail 'Claude did not stop within 30 seconds; upgrade cancelled. Wait for it to exit and rerun claude-session upgrade.'
       sleep 0.1
     done
@@ -300,7 +468,7 @@ if [[ "$action" == upgrade ]]; then
   exit 0
 fi
 
-[[ ! -d "${XDG_STATE_HOME:-$HOME/.local/state}/claude-session/upgrade.lock" ]] || fail 'An upgrade is running; wait for it to finish before starting sessions.'
+[[ ! -d "$lock" ]] || fail 'An upgrade is running; wait for it to finish before starting sessions.'
 [[ -d "$3" ]] || fail "Directory does not exist: $3"
 directory=$(cd -- "$3" && pwd -P)
 resolve_claude || fail 'claude is required. Install Claude Code and sign in first.'
@@ -309,9 +477,11 @@ if [[ "$action" == rex-start ]]; then
   if tmux has-session -t "$target" 2>/dev/null || [[ -n $(rex_session_id "$session") ]]; then
     fail "Session '$name' already exists. Run claude-session list."
   fi
-  # Rex owns the terminal, so the tmux pane-tracking hook is not passed.
+  # The __rex-run wrapper starts Claude and keeps it in this pane on upgrade.
+  script_path="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)/$(basename -- "${BASH_SOURCE[0]}")"
+  # Forward PATH, as for tmux, so the wrapper finds the same claude.
   created=$(rex new "$session" -c "$directory" --window "$name" --json -- \
-    "$claude_bin" --dangerously-skip-permissions --remote-control "$name") ||
+    env "PATH=$PATH" "$script_path" __rex-run "$name") ||
     fail 'rex new failed; is the Rex app running?'
   rex_id=$(jq -r '.session_id' <<< "$created")
   claude_block=$(jq -r '.initial_windows[0].block_ids[0]' <<< "$created")
