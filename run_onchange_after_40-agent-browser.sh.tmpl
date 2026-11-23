@@ -1,0 +1,27 @@
+{{- if eq .chezmoi.os "darwin" -}}
+#!/bin/bash
+# Shared agent browser: one Playwright MCP HTTP server (launchd, 127.0.0.1:8931) owns a single
+# Chrome; each Claude/Codex session gets an isolated context in it. chrome-devtools attaches to
+# that Chrome over CDP (127.0.0.1:9222) instead of launching its own.
+# Codex registrations live in ~/.codex/config.toml; Claude's live in ~/.claude.json (unmanaged),
+# so they are registered here.
+#
+# Re-runs when either file changes:
+#   plist:  {{ include "Library/LaunchAgents/com.datdo.playwright-mcp.plist.tmpl" | sha256sum }}
+#   config: {{ include "dot_config/playwright-mcp/config.json.tmpl" | sha256sum }}
+set -euo pipefail
+
+PLIST="$HOME/Library/LaunchAgents/com.datdo.playwright-mcp.plist"
+DOMAIN="gui/$(id -u)"
+mkdir -p "$HOME/Library/Logs"
+launchctl bootout "$DOMAIN/com.datdo.playwright-mcp" 2>/dev/null || true
+launchctl bootstrap "$DOMAIN" "$PLIST"
+echo "playwright-mcp launch agent loaded"
+
+if command -v claude >/dev/null 2>&1; then
+  claude mcp remove playwright -s user >/dev/null 2>&1 || true
+  claude mcp add --transport http -s user playwright http://127.0.0.1:8931/mcp
+  claude mcp remove chrome_devtools -s user >/dev/null 2>&1 || true
+  claude mcp add -s user chrome_devtools -- npx -y chrome-devtools-mcp@latest --browserUrl http://127.0.0.1:9222
+fi
+{{ end -}}

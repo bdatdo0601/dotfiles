@@ -1,0 +1,13 @@
+{
+  "browser": {
+    "browserName": "chromium",
+    "isolated": true,
+    "launchOptions": {
+      "channel": "chrome",
+      "headless": false,
+      "args": ["--remote-debugging-port=9222"]
+    }
+  },
+  "server": { "host": "127.0.0.1", "port": 8931 },
+  "outputDir": "{{ .chezmoi.homeDir }}/.cache/playwright-mcp-output"
+}
