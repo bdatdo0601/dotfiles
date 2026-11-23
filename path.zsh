@@ -32,7 +32,7 @@ add_to_path "$HOME/.local/share/chezmoi/helpers"
 # Python
 add_to_path "$HOME/.local/bin"
 
-add_to_path "$(gcloud info --format='value(installation.sdk_root)')/bin"
+add_to_path "$HOME/google-cloud-sdk/bin"
 
 # go
 add_to_path "$(go env GOPATH)/bin"
