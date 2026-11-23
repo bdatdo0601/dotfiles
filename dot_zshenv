@@ -1,1 +1,6 @@
+# Read by every zsh, including non-interactive ones (hooks, scripts, agents),
+# so tool homes resolve the same everywhere — not only in interactive shells.
+export XDG_DATA_HOME="$HOME/.local/share"
+export PROTO_HOME="$XDG_DATA_HOME/proto"
+
 . "$HOME/.cargo/env"
