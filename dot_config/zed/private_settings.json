@@ -20,7 +20,7 @@
  "git_panel": {
   "dock": "right"
  },
- "theme": "GitHub Dark Default",
+ "theme": "Catppuccin Mocha",
 	"base_keymap": "VSCode",
 	"buffer_font_family": "JetBrainsMono Nerd Font",
 	"ui_font_size": 15.0,
@@ -34,7 +34,8 @@
 		"JSON": ["json", "jsonc", "*.code-snippets"]
 	},
 	"agent": {
-		"dock": "right",
+		"button": false,
+  "dock": "right",
   "tool_permissions": {
    "default": "allow"
   },
