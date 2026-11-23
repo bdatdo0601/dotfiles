@@ -16,7 +16,5 @@ rex.bind("alt+up", "pane.focus", { direction = "up" })                  -- :30
 rex.bind("alt+down", "pane.focus", { direction = "down" })              -- :31
 rex.bind("shift+left", "client.tab.previous")                           -- :34
 rex.bind("shift+right", "client.tab.next")                              -- :35
-rex.bind("alt+shift+h", "client.tab.previous")                          -- :38
-rex.bind("alt+shift+l", "client.tab.next")                              -- :39
 rex.bind("ctrl+b>shift+'", "pane.split", { direction = "down" })        -- :58
 rex.bind("ctrl+b>shift+5", "pane.split", { direction = "right" })       -- :59
