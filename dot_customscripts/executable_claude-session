@@ -7,11 +7,14 @@ Usage:
   claude-session start NAME DIRECTORY  Start a detached Claude session
   claude-session start-attach NAME DIRECTORY
                                        Start a session and attach immediately
+  claude-session rex-start NAME DIRECTORY
+                                       Start a session in Rex instead of tmux,
+                                       with a lazygit pane beside Claude
   claude-session resume NAME DIRECTORY SESSION_ID
                                        Start from a saved Claude conversation
   claude-session attach NAME           Attach from Zed or an SSH terminal
-  claude-session list                  List running Claude tmux sessions
-  claude-session kill NAME             End one Claude tmux session
+  claude-session list                  List running Claude sessions (tmux and Rex)
+  claude-session kill NAME             End one Claude session (tmux or Rex)
   claude-session kill-all              End all Claude tmux sessions
   claude-session upgrade               Stop Claude, brew upgrade, resume all
 
@@ -24,6 +27,11 @@ Detach with Ctrl-b, then d. Use /exit inside Claude to end the session.
 Keep the host awake; tmux preserves sessions across disconnects, not reboots.
 Run upgrade from a separate terminal after Claude has finished its work.
 It runs: brew upgrade claude-code@latest
+
+Rex sessions (rex-start) run in the Rex server, not tmux. Open them from the
+Rex session picker (Shift-Cmd-K). Rex's own hook tells Claude which Rex session
+and pane it is in, so it can open splits beside itself. upgrade does not stop
+or resume Rex sessions; they keep the old Claude until you restart them.
 EOF
 }
 
@@ -40,10 +48,17 @@ attach_session() {
   exec tmux attach-session -t "$1"
 }
 
+# Prints the ID of the Rex session labelled $1, or nothing.
+rex_session_id() {
+  command -v rex >/dev/null && command -v jq >/dev/null || return 0
+  rex ls --json 2>/dev/null |
+    jq -r --arg label "$1" '[.sessions[]? | select(.label == $label)][0].session_id // empty'
+}
+
 action=${1:-list}
 case "$action" in
   help|-h|--help) usage; exit 0 ;;
-  start|start-attach) [[ $# == 3 ]] || { usage >&2; exit 2; } ;;
+  start|start-attach|rex-start) [[ $# == 3 ]] || { usage >&2; exit 2; } ;;
   resume) [[ $# == 4 ]] || { usage >&2; exit 2; } ;;
   attach|kill) [[ $# == 2 ]] || { usage >&2; exit 2; } ;;
   list|kill-all|upgrade) [[ $# -le 1 ]] || { usage >&2; exit 2; } ;;
@@ -86,6 +101,16 @@ if [[ "$action" == list || "$action" == kill-all ]]; then
       found=true
     fi
   done <<< "$sessions"
+  # kill-all stays tmux-only; Rex sessions are listed but ended one by one.
+  if [[ "$action" == list ]] && command -v rex >/dev/null && command -v jq >/dev/null; then
+    rex_labels=$(rex ls --json 2>/dev/null |
+      jq -r '.sessions[]?.label | strings | select(startswith("claude-"))') || rex_labels=''
+    while IFS= read -r label; do
+      [[ -n "$label" ]] || continue
+      printf '%s (rex)\n' "${label#claude-}"
+      found=true
+    done <<< "$rex_labels"
+  fi
   if [[ -n "$deferred_session" ]]; then
     printf 'Killing %s\n' "${deferred_session#claude-}"
     tmux kill-session -t "=$deferred_session"
@@ -100,12 +125,21 @@ if [[ "$action" == list || "$action" == kill-all ]]; then
   exit 0
 fi
 
-if [[ "$action" == start || "$action" == start-attach || "$action" == resume || "$action" == attach || "$action" == kill ]]; then
+if [[ "$action" == start || "$action" == start-attach || "$action" == rex-start || "$action" == resume || "$action" == attach || "$action" == kill ]]; then
   name=$2
   [[ "$name" =~ ^[a-zA-Z0-9][a-zA-Z0-9_-]*$ ]] || fail 'Invalid name; use letters, digits, underscores and hyphens, starting with a letter or digit.'
   session="claude-$name"
   target="=$session"
   if [[ "$action" == attach || "$action" == kill ]]; then
+    if ! tmux has-session -t "$target" 2>/dev/null; then
+      rex_id=$(rex_session_id "$session")
+      if [[ -n "$rex_id" && "$action" == kill ]]; then
+        rex kill "$rex_id" >/dev/null
+        printf 'Killed %s\n' "$name"
+        exit 0
+      fi
+      [[ -z "$rex_id" ]] || fail "'$name' runs in Rex; open it from the Rex session picker (Shift-Cmd-K)."
+    fi
     tmux has-session -t "$target" 2>/dev/null || fail "No session named '$name'. Run claude-session list."
     if [[ "$action" == kill ]]; then
       tmux kill-session -t "$target"
@@ -270,6 +304,26 @@ fi
 [[ -d "$3" ]] || fail "Directory does not exist: $3"
 directory=$(cd -- "$3" && pwd -P)
 resolve_claude || fail 'claude is required. Install Claude Code and sign in first.'
+if [[ "$action" == rex-start ]]; then
+  command -v rex >/dev/null || fail 'rex is required; run chezmoi apply to link ~/.local/bin/rex.'
+  if tmux has-session -t "$target" 2>/dev/null || [[ -n $(rex_session_id "$session") ]]; then
+    fail "Session '$name' already exists. Run claude-session list."
+  fi
+  # Rex owns the terminal, so the tmux pane-tracking hook is not passed.
+  created=$(rex new "$session" -c "$directory" --window "$name" --json -- \
+    "$claude_bin" --dangerously-skip-permissions --remote-control "$name") ||
+    fail 'rex new failed; is the Rex app running?'
+  rex_id=$(jq -r '.session_id' <<< "$created")
+  claude_block=$(jq -r '.initial_windows[0].block_ids[0]' <<< "$created")
+  if command -v lazygit >/dev/null && git -C "$directory" rev-parse --git-dir >/dev/null 2>&1; then
+    rex split -s "$rex_id" -b "$claude_block" --split=right --ratio 35 --focus=false \
+      --label files -c "$directory" -- lazygit >/dev/null ||
+      printf 'claude-session: could not open the lazygit pane; Claude is running.\n' >&2
+  fi
+  printf 'Started Rex session %s in %s\n' "$name" "$directory"
+  printf 'Open it from the Rex session picker (Shift-Cmd-K) to finish any Claude prompts.\n'
+  exit 0
+fi
 claude_args=(--dangerously-skip-permissions --remote-control "$name" --settings "$settings")
 if [[ "$action" == resume ]]; then
   [[ "$4" =~ ^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$ ]] || fail 'Invalid conversation ID; copy the session UUID from /status inside Claude.'

@@ -21,6 +21,7 @@ brew 'svn' # Needed to install fonts
 brew 'aichat'
 brew 'nvim'
 brew 'tmux'
+brew 'lazygit' # Live diff pane beside claude-session rex-start sessions
 brew 'python'
 
 # Spatie Medialibrary
