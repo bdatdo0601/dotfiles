@@ -67,13 +67,9 @@ source = "/Users/datdo/.codex/.tmp/bundled-marketplaces/openai-bundled"
 source_type = "local"
 source = "/Users/datdo/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
 
-[mcp_servers.chrome_devtools]
-args = ["chrome-devtools-mcp@latest"]
-command = "npx"
-
 [mcp_servers.computer-use]
-args = ["mcp"]
 command = "./Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient"
+args = ["mcp"]
 cwd = "."
 enabled = false
 
@@ -81,42 +77,41 @@ enabled = false
 url = "https://www.cubic.dev/api/mcp"
 
 [mcp_servers.node_repl]
-args = []
 command = "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node_repl"
 env_vars = ["BROWSER_USE_ACCESS_EXECUTOR_ID", "BROWSER_USE_ACCESS_PIPE_PATH", "BROWSER_USE_ACCESS_VERIFYING_IDENTITY"]
-startup_timeout_sec = 120
+startup_timeout_sec = 120.0
 
 [mcp_servers.node_repl.env]
+BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab,mcpapps"
+BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
+BROWSER_USE_CODEX_APP_VERSION = "26.1117.41037"
+BROWSER_USE_TINYSKY_ENABLED = "1"
+CODEX_CLI_PATH = "/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex"
+CODEX_HOME = "/Users/datdo/.codex"
+NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = ""
+NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = ""
+NODE_REPL_INSTRUCTIONS_USE_CASE_COMPUTER_USE = ""
+NODE_REPL_LAZY_TRUSTED_WORKER = "0"
 NODE_REPL_NATIVE_PIPE_CONNECT_TIMEOUT_MS = "1000"
 NODE_REPL_NODE_MODULE_DIRS = "/Applications/ChatGPT.app/Contents/Resources/cua_node/lib/node_modules"
 NODE_REPL_NODE_PATH = "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node"
 NODE_REPL_TRUSTED_CODE_PATHS = "/Users/datdo/.codex:/Applications/ChatGPT.app/Contents/Resources/cua_node/lib/node_modules"
-CODEX_HOME = "/Users/datdo/.codex"
-BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab,mcpapps"
-BROWSER_USE_TINYSKY_ENABLED = "1"
-NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = ""
-NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = ""
-NODE_REPL_INSTRUCTIONS_USE_CASE_COMPUTER_USE = ""
-BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
-BROWSER_USE_CODEX_APP_VERSION = "26.1111.21308"
-NODE_REPL_TRUSTED_SERVICES = '{"browser":"/Users/datdo/.codex/plugins/cache/openai-bundled/browser/26.1111.21308/scripts/browser-service.mjs","sky":"@oai/sky/service"}'
+NODE_REPL_TRUSTED_SERVICES = '{"browser":"/Users/datdo/.codex/plugins/cache/openai-bundled/browser/26.1117.41037/scripts/browser-service.mjs","sky":"@oai/sky/service"}'
 SKY_CUA_SERVICE_PATH = "/Users/datdo/.codex/computer-use/Codex Computer Use.app"
-CODEX_CLI_PATH = "/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex"
 
 [mcp_servers.openaiDeveloperDocs]
 url = "https://developers.openai.com/mcp"
 
-[mcp_servers.playwright]
-args = ["@playwright/mcp@latest"]
-command = "npx"
-
 [mcp_servers.vibe_kanban]
-args = [
-    "-y",
-    "vibe-kanban@latest",
-    "--mcp",
-]
 command = "npx"
+args = ["-y", "vibe-kanban@latest", "--mcp"]
+
+[mcp_servers.playwright]
+url = "http://127.0.0.1:8931/mcp"
+
+[mcp_servers.chrome_devtools]
+command = "npx"
+args = ["-y", "chrome-devtools-mcp@latest", "--browserUrl", "http://127.0.0.1:9222"]
 
 [notice]
 hide_rate_limit_model_nudge = true
