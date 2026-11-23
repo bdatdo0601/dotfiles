@@ -19,8 +19,8 @@ encryption = "age"
     autoPush = true
 [diff]
     exclude = ["scripts"]
-    command = "zed"
-    args = ["--wait", "--diff"]
+    command = "nvim"
+    args = ["-d", {{ `"{{ .Destination }}", "{{ .Target }}"` }}]
 [edit]
     command = "zed"
     args = ["--wait"]
