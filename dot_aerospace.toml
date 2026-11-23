@@ -272,9 +272,17 @@ run = "move-node-to-workspace M"
 if.app-id = 'md.obsidian'
 run = "move-node-to-workspace N"
 
+# Rex hides its traffic lights until hover and reports them disabled meanwhile,
+# so AeroSpace's dialog heuristic floats the window whenever it re-detects it.
+# Keep Settings floating; force every other Rex window back to tiling.
 [[on-window-detected]]
 if.app-id = 'com.superlogical.rex'
-run = "move-node-to-workspace C"
+if.window-title-regex-substring = 'Settings'
+run = "layout floating"
+
+[[on-window-detected]]
+if.app-id = 'com.superlogical.rex'
+run = ["layout tiling", "move-node-to-workspace C"]
 
 [[on-window-detected]]
 if.app-id = 'com.openai.codex'
