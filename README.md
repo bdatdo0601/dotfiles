@@ -268,6 +268,44 @@ shellcheck dot_customscripts/executable_claude-session
 python3 helpers/test_claude_session.py   # also checks tmux.conf key handling
 ```
 
+## Antigravity (agy) sessions
+
+`agy-session` in `~/.customscripts` provides the same workflow for the Antigravity
+CLI (`agy`, installed via `cask 'antigravity-cli'` in `Brewfile`):
+
+```sh
+agy-session start iron ~/workspace/iron-fillet
+agy-session start-attach iron ~/workspace/iron-fillet
+agy-session list
+agy-session attach iron
+agy-session resume iron ~/workspace/iron-fillet SESSION_ID
+agy-session kill iron
+agy-session kill-all
+agy-session upgrade
+```
+
+Sessions launch with `--dangerously-skip-permissions --remote-control`, defaulting
+to Rex (with a `lazygit` pane in git repositories) or tmux when `--tmux` is passed
+or `rex` is not installed. `agy-session` registers an `"agy-session"` entry for
+`SessionStart` and `PreInvocation` in `~/.gemini/config/hooks.json` (preserving
+existing entries like `fleet`) so `agy-session upgrade` can stop active sessions,
+run `brew upgrade --cask antigravity-cli` (or `agy update` for standalone installs),
+and resume each conversation with `--conversation ID` in the same pane.
+
+Apply just the helper, without running chezmoi bootstrap scripts:
+
+```sh
+chezmoi apply --exclude scripts ~/.customscripts/agy-session
+```
+
+Validate from the chezmoi source root (tests use an isolated tmux server and
+fake `agy`/`rex` executables, with no model calls):
+
+```sh
+shellcheck dot_customscripts/executable_agy-session
+python3 helpers/test_agy_session.py
+```
+
 ## Backups Encrypted Files
 
 run `cmencryptbackup.sh` (located in helpers)

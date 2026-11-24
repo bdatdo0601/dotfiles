@@ -21,7 +21,7 @@ brew 'svn' # Needed to install fonts
 brew 'aichat'
 brew 'nvim'
 brew 'tmux'
-brew 'lazygit' # Live diff pane beside claude-session rex-start sessions
+brew 'lazygit' # Live diff pane beside claude-session/agy-session Rex sessions
 brew 'python'
 
 # Spatie Medialibrary
@@ -83,6 +83,7 @@ cask 'yt-music'
 cask 'obsidian'
 cask 'zed'
 cask 'claude-code'
+cask 'antigravity-cli'
 cask 'shortwave'
 cask 'iterm2'
 cask 'kitlangton-hex'
