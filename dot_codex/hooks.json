@@ -1,25 +1,79 @@
 {
   "hooks": {
-    "PreToolUse": [
+    "Interrupt": [
       {
-        "matcher": "Write|Edit",
         "hooks": [
           {
-            "type": "command",
-            "command": "node '/Users/datdo/.codex/hooks/gsd-prompt-guard.js'",
-            "timeout": 5
+            "command": "/opt/homebrew/bin/fleet agent-hook --harness codex",
+            "timeout": 3,
+            "type": "command"
           }
         ]
       }
     ],
-    "PostToolUse": [
+    "PermissionRequest": [
       {
-        "matcher": "Bash|Edit|Write|MultiEdit|Agent|Task",
         "hooks": [
           {
-            "type": "command",
+            "command": "/opt/homebrew/bin/fleet agent-hook --harness codex",
+            "timeout": 5,
+            "type": "command"
+          }
+        ],
+        "matcher": "*"
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
             "command": "node '/Users/datdo/.codex/hooks/gsd-context-monitor.js'",
-            "timeout": 10
+            "timeout": 10,
+            "type": "command"
+          }
+        ],
+        "matcher": "Bash|Edit|Write|MultiEdit|Agent|Task"
+      },
+      {
+        "hooks": [
+          {
+            "command": "/opt/homebrew/bin/fleet agent-hook --harness codex",
+            "timeout": 5,
+            "type": "command"
+          }
+        ],
+        "matcher": "*"
+      }
+    ],
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "node '/Users/datdo/.codex/hooks/gsd-prompt-guard.js'",
+            "timeout": 5,
+            "type": "command"
+          }
+        ],
+        "matcher": "Write|Edit"
+      },
+      {
+        "hooks": [
+          {
+            "command": "/opt/homebrew/bin/fleet agent-hook --harness codex",
+            "timeout": 5,
+            "type": "command"
+          }
+        ],
+        "matcher": "request_user_input"
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "command": "/opt/homebrew/bin/fleet agent-hook --harness codex",
+            "timeout": 3,
+            "type": "command"
           }
         ]
       }
@@ -28,18 +82,49 @@
       {
         "hooks": [
           {
-            "type": "command",
-            "command": "node '/Users/datdo/.codex/hooks/gsd-check-update.js'"
+            "command": "node '/Users/datdo/.codex/hooks/gsd-check-update.js'",
+            "type": "command"
           }
         ]
       },
       {
         "hooks": [
           {
-            "type": "command",
             "command": "/bin/sh -c 'rex __internal session-start --agent codex --feature-session-naming=false 2>/dev/null || true'",
+            "statusMessage": "Loading Rex terminal context",
             "timeout": 5,
-            "statusMessage": "Loading Rex terminal context"
+            "type": "command"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "command": "/opt/homebrew/bin/fleet agent-hook --harness codex",
+            "timeout": 5,
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "command": "/opt/homebrew/bin/fleet agent-hook --harness codex",
+            "timeout": 5,
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "command": "/opt/homebrew/bin/fleet agent-hook --harness codex",
+            "timeout": 5,
+            "type": "command"
           }
         ]
       }

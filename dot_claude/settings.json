@@ -1,82 +1,189 @@
 {
+  "agentPushNotifEnabled": false,
+  "alwaysThinkingEnabled": true,
+  "autoCompactEnabled": true,
+  "crossSessionInbound": "accept",
+  "effortLevel": "high",
+  "enabledPlugins": {
+    "rust-analyzer-lsp@claude-plugins-official": true
+  },
   "env": {
     "CLAUDE_CODE_SUBAGENT_MODEL": "sonnet"
   },
-  "permissions": {
-    "defaultMode": "auto"
-  },
-  "model": "opus[1m]",
+  "fastMode": true,
   "hooks": {
-    "PostToolUse": [
+    "Notification": [
       {
-        "matcher": "Bash|Edit|Write|MultiEdit|Agent|Task",
         "hooks": [
           {
-            "type": "command",
-            "command": "node \"/Users/datdo/.claude/hooks/gsd-context-monitor.js\"",
-            "timeout": 10
+            "command": "/opt/homebrew/bin/fleet agent-hook --harness claude",
+            "timeout": 5,
+            "type": "command"
           }
-        ]
+        ],
+        "matcher": "permission_prompt|elicitation_dialog|elicitation_url_dialog|agent_needs_input"
+      }
+    ],
+    "PermissionDenied": [
+      {
+        "hooks": [
+          {
+            "command": "/opt/homebrew/bin/fleet agent-hook --harness claude",
+            "timeout": 5,
+            "type": "command"
+          }
+        ],
+        "matcher": "*"
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "command": "/opt/homebrew/bin/fleet agent-hook --harness claude",
+            "timeout": 5,
+            "type": "command"
+          }
+        ],
+        "matcher": "*"
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "node \"/Users/datdo/.claude/hooks/gsd-context-monitor.js\"",
+            "timeout": 10,
+            "type": "command"
+          }
+        ],
+        "matcher": "Bash|Edit|Write|MultiEdit|Agent|Task"
       },
       {
-        "matcher": "*",
-        "hooks": []
+        "hooks": [],
+        "matcher": "*"
+      },
+      {
+        "hooks": [
+          {
+            "command": "/opt/homebrew/bin/fleet agent-hook --harness claude",
+            "timeout": 5,
+            "type": "command"
+          }
+        ],
+        "matcher": "*"
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "hooks": [
+          {
+            "command": "/opt/homebrew/bin/fleet agent-hook --harness claude",
+            "timeout": 5,
+            "type": "command"
+          }
+        ],
+        "matcher": "*"
       }
     ],
     "PreToolUse": [
       {
-        "matcher": "Write|Edit",
         "hooks": [
           {
-            "type": "command",
             "command": "node \"/Users/datdo/.claude/hooks/gsd-prompt-guard.js\"",
-            "timeout": 5
+            "timeout": 5,
+            "type": "command"
           }
-        ]
+        ],
+        "matcher": "Write|Edit"
       },
       {
-        "matcher": "*",
-        "hooks": []
+        "hooks": [],
+        "matcher": "*"
+      },
+      {
+        "hooks": [
+          {
+            "command": "/opt/homebrew/bin/fleet agent-hook --harness claude",
+            "timeout": 5,
+            "type": "command"
+          }
+        ],
+        "matcher": "AskUserQuestion|ExitPlanMode"
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "command": "/opt/homebrew/bin/fleet agent-hook --harness claude",
+            "timeout": 3,
+            "type": "command"
+          }
+        ]
       }
     ],
     "SessionStart": [
       {
         "hooks": [
           {
-            "type": "command",
-            "command": "node \"/Users/datdo/.claude/hooks/gsd-check-update.js\""
+            "command": "node \"/Users/datdo/.claude/hooks/gsd-check-update.js\"",
+            "type": "command"
           }
         ]
       },
       {
         "hooks": [
           {
-            "type": "command",
             "command": "\"$HOME/.claude/scripts/dev-disk-cleanup.sh\" --auto 2>/dev/null || true",
-            "timeout": 10
+            "timeout": 10,
+            "type": "command"
           }
         ]
       },
       {
         "hooks": [
           {
-            "type": "command",
             "command": "/bin/sh -c 'rex __internal session-start --agent claude --feature-session-naming=false 2>/dev/null || true'",
-            "timeout": 5
+            "timeout": 5,
+            "type": "command"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "command": "/opt/homebrew/bin/fleet agent-hook --harness claude",
+            "timeout": 5,
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "command": "/opt/homebrew/bin/fleet agent-hook --harness claude",
+            "timeout": 5,
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "command": "/opt/homebrew/bin/fleet agent-hook --harness claude",
+            "timeout": 5,
+            "type": "command"
           }
         ]
       }
     ]
   },
-  "statusLine": {
-    "type": "command",
-    "command": "node \"/Users/datdo/.claude/hooks/gsd-statusline.js\""
-  },
-  "enabledPlugins": {
-    "rust-analyzer-lsp@claude-plugins-official": true
-  },
-  "alwaysThinkingEnabled": true,
-  "effortLevel": "high",
+  "model": "opus[1m]",
   "modelSettings": {
     "claude-opus-5-5": {
       "effortLevel": "high"
@@ -85,11 +192,15 @@
       "effortLevel": "high"
     }
   },
-  "fastMode": true,
-  "tui": "fullscreen",
+  "permissions": {
+    "defaultMode": "auto"
+  },
+  "skipAutoPermissionPrompt": true,
   "skipDangerousModePermissionPrompt": true,
   "skipWorkflowUsageWarning": true,
-  "autoCompactEnabled": true,
-  "agentPushNotifEnabled": false,
-  "skipAutoPermissionPrompt": true
+  "statusLine": {
+    "command": "node \"/Users/datdo/.claude/hooks/gsd-statusline.js\"",
+    "type": "command"
+  },
+  "tui": "fullscreen"
 }

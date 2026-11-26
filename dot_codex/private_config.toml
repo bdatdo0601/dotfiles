@@ -33,6 +33,7 @@ HOOKS = "original"
 COMMANDS = "original"
 
 [features]
+hooks = true
 js_repl = false
 
 [hooks.state."/Users/datdo/.codex/hooks.json:post_tool_use:0:0"]
@@ -202,3 +203,7 @@ screen_reader_detection_done = true
 "gpt-5.6-sol" = 1
 gpt-6-astra = 4
 "gpt-6.1-sol" = 4
+
+[mcp_servers.fleet]
+command = "/opt/homebrew/bin/fleet"
+args = ["mcp", "serve", "--harness", "codex"]
